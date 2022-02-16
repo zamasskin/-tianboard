@@ -1,0 +1,35 @@
+### Node template
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directory
+node_modules
+/env/
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+
+# IDE
+.vscode
+.idea
+
+# production
+build
+dist
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+
+#env
+.env
+
+# testing
+coverage
