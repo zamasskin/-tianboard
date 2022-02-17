@@ -17,6 +17,8 @@ import { config, rootDir } from "./config";
   mount: {
     "/api": [`${rootDir}/controllers/**/*.ts`],
   },
+  componentsScan: [`./services/**/**.js`],
+  customServiceOptions: {},
   views: {
     root: `${rootDir}/views`,
     extensions: {
