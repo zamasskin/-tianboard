@@ -1,17 +1,18 @@
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
+import { Knex } from "knex";
 
 import {
   ConnectionApplyParams,
   ConnectionCreateParams,
 } from "src/interfaces/ConnectionParams";
+import { PrismaService } from "../PrismaService";
 import ConnectionAbstract from "src/abstract/ConnectionAbstract";
 import { ConnectionsRepository } from "./ConnectionsRepository";
 import KnexConnection, {
   PROVIDERS,
 } from "../../libs/connections/KnexConnection";
-import { Knex } from "knex";
-import { string } from "@tsed/schema";
+// import { ConnectionApplyModel } from "src/models/ConnectionApplyModel";
 
 // При подключении новых провайдеров типы заводятся тут(например для провайдера mongoDb)
 type provider = Knex;
@@ -20,6 +21,9 @@ type provider = Knex;
 export class ConnectionService {
   @Inject()
   protected connectionService: ConnectionsRepository;
+
+  @Inject()
+  prisma: PrismaService;
 
   @Constant("env")
   production: boolean;
@@ -38,6 +42,10 @@ export class ConnectionService {
 
   // Выполнение запроса
   async apply(connectionId: number, { query, params }: ConnectionApplyParams) {
+    if (!connectionId) {
+      return this.prisma.$queryRawUnsafe(query);
+    }
+
     const connectionParams = await this.connectionService.findUnique({
       where: { id: connectionId },
     });

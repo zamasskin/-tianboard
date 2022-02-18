@@ -1,7 +1,10 @@
 import { BodyParams, PathParams } from "@tsed/common";
 import { Controller, Inject } from "@tsed/di";
 import { ContentType, Get, Post, Put, Delete } from "@tsed/schema";
-import { ConnectionCreateParams } from "src/interfaces/ConnectionParams";
+import {
+  ConnectionCreateParams,
+  ConnectionApplyParams,
+} from "src/interfaces/ConnectionParams";
 import { ConnectionService } from "src/services/connections/ConnectionService";
 
 @Controller("/connections")
@@ -20,10 +23,15 @@ export class ConnectionController {
     return this.connectionService.create(config);
   }
 
-  @Post("/apply")
-  apply() {}
+  @Post("/:id")
+  apply(
+    @PathParams("id") id: number,
+    @BodyParams() params: ConnectionApplyParams
+  ) {
+    return this.connectionService.apply(id, params);
+  }
 
-  @Put(":id")
+  @Put("/:id")
   update(
     @PathParams("id") id: number,
     @BodyParams() config: ConnectionCreateParams
@@ -31,7 +39,7 @@ export class ConnectionController {
     return this.connectionService.update(id, config);
   }
 
-  @Delete(":id")
+  @Delete("/:id")
   delete(@PathParams("id") id: number) {
     return this.connectionService.delete(id);
   }

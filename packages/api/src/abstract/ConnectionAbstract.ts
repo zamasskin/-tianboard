@@ -1,4 +1,5 @@
 import { ConnectionApplyParams } from "src/interfaces/ConnectionParams";
+// import { ConnectionApplyModel } from "src/models/ConnectionApplyModel";
 
 export default abstract class ConnectionAbstract<T> {
   provider: T;

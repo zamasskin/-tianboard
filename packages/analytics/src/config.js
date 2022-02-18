@@ -7,7 +7,7 @@ const config = {
     defaultPath: '/dashboard/default',
     fontFamily: `'Roboto', sans-serif`,
     borderRadius: 12,
-    apiUrl: new URL(apiPath, [apiHost, apiPort].join(':'))
+    apiUrl: new URL(apiPath, [apiHost, apiPort].join(':')).href
 };
 
 export default config;
