@@ -7,7 +7,8 @@ import { gridSpacing } from 'store/constant';
 import { useState } from 'react';
 
 function DashboardEdit() {
-    const [data, setData] = useState(false);
+    const [data, setData] = useState([{ id: 1, name: 'test' }]);
+    const [settings, setSettings] = useState({ component: 'DataGrid' });
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -16,11 +17,7 @@ function DashboardEdit() {
                     <QueryEditor onResult={(data) => setData(data)} />
                 </Grid>
             </Grid>
-            {data && (
-                <Grid item xs={12}>
-                    <DashboardEditor data={data} />
-                </Grid>
-            )}
+            <DashboardEditor data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
         </Grid>
     );
 }
