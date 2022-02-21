@@ -36,7 +36,9 @@ const DataGrid = ({ data, settings, onChange, edit = false }) => {
                                     columns={settingsColumns}
                                     checkboxSelection
                                     selectionModel={getSelection(data, settings)}
-                                    onSelectionModelChange={(selected) => onChange && onChange({ ...settings, columnSelection: selected })}
+                                    onSelectionModelChange={(selected) =>
+                                        onChange && onChange({ ...settings, dataGridColumnSelection: selected })
+                                    }
                                     onEditRowsModelChange={(newSettings) => onChange && onChange(getUpdateSettings(newSettings, settings))}
                                 />
                             </div>

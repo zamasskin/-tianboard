@@ -47,18 +47,18 @@ export const defaultColumn = (key) => ({
 
 export const getColumns = (data, settings) => {
     const keys = _.chain(data).head().keys().value();
-    const columnSelection = settings?.columnSelection || keys;
-    const { columnsSetting = {} } = settings;
-    const getColumn = (key) => _.merge(defaultColumn(key), columnsSetting[key]);
+    const dataGridColumnSelection = settings?.dataGridColumnSelection || keys;
+    const { dataGridColumnsSetting = {} } = settings;
+    const getColumn = (key) => _.merge(defaultColumn(key), dataGridColumnsSetting[key]);
     return _.chain(keys)
-        .map((key) => ({ ...getColumn(key), hide: !columnSelection.includes(key) }))
+        .map((key) => ({ ...getColumn(key), hide: !dataGridColumnSelection.includes(key) }))
         .orderBy('order')
         .value();
 };
 
 export const getSettingsRows = (data, settings) => {
-    const { columnsSetting = {} } = settings;
-    const getSettings = (key) => columnsSetting[key] || defaultColumn(key);
+    const { dataGridColumnsSetting = {} } = settings;
+    const getSettings = (key) => dataGridColumnsSetting[key] || defaultColumn(key);
 
     const keys = _.chain(data).head().keys().value();
     return keys.map((key) => ({
@@ -68,27 +68,27 @@ export const getSettingsRows = (data, settings) => {
 };
 
 export const getUpdateSettings = (newSettings, oldSettings) => {
-    const { columnsSetting = {} } = oldSettings;
+    const { dataGridColumnsSetting = {} } = oldSettings;
     const defaults = _.chain(newSettings)
         .keys()
         .map((key) => defaultColumn(key))
         .keyBy('field')
         .value();
 
-    const newColumnsSetting = _.merge(
+    const newDataGridColumnsSetting = _.merge(
         defaults,
-        columnsSetting,
+        dataGridColumnsSetting,
         _.chain(newSettings)
             .mapValues((setting) => _.mapValues(setting, ({ value }) => value))
             .value()
     );
 
-    return { ...oldSettings, columnsSetting: newColumnsSetting };
+    return { ...oldSettings, dataGridColumnsSetting: newDataGridColumnsSetting };
 };
 
 export const getSelection = (data, settings) => {
     const keys = _.chain(data).head().keys().value();
-    return settings?.columnSelection || keys;
+    return settings?.dataGridColumnSelection || keys;
 };
 
 export const getRows = (data) => data.map((items) => ({ ...items, id: items.id || uuidv4() }));
