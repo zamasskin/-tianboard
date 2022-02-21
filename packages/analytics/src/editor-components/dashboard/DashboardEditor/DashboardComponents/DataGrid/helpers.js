@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 
-export const defWidth = 100;
+export const defWidth = 120;
 export const defAlign = 'left';
 export const defHeaderAlign = 'left';
 
@@ -31,7 +31,8 @@ export const settingsColumns = [
         editable: true,
         type: 'singleSelect',
         valueOptions: valueAlign
-    }
+    },
+    { field: 'order', headerName: 'Сортировка', width: 80, editable: true, type: 'number' }
 ];
 
 export const defaultColumn = (key) => ({
@@ -40,7 +41,8 @@ export const defaultColumn = (key) => ({
     hide: false,
     width: defWidth,
     align: defAlign,
-    headerAlign: defHeaderAlign
+    headerAlign: defHeaderAlign,
+    order: 500
 });
 
 export const getColumns = (data, settings) => {
@@ -48,12 +50,15 @@ export const getColumns = (data, settings) => {
     const columnSelection = settings?.columnSelection || keys;
     const { columnsSetting = {} } = settings;
     const getColumn = (key) => _.merge(defaultColumn(key), columnsSetting[key]);
-    return keys.map((key) => ({ ...getColumn(key), hide: !columnSelection.includes(key) }));
+    return _.chain(keys)
+        .map((key) => ({ ...getColumn(key), hide: !columnSelection.includes(key) }))
+        .orderBy('order')
+        .value();
 };
 
 export const getSettingsRows = (data, settings) => {
     const { columnsSetting = {} } = settings;
-    const getSettings = (key) => columnsSetting[key] || { headerName: key, width: defWidth, align: defAlign, headerAlign: defHeaderAlign };
+    const getSettings = (key) => columnsSetting[key] || defaultColumn(key);
 
     const keys = _.chain(data).head().keys().value();
     return keys.map((key) => ({
