@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { DataGrid as MuiDataGrid } from '@mui/x-data-grid';
-import { Grid, Divider, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
