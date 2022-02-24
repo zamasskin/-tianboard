@@ -1,10 +1,5 @@
 import MainCard from 'ui-component/cards/MainCard';
-import ColorPicker from 'ui-component/tools/ColorPicker';
 
-const BarChart = () => (
-    <MainCard>
-        <ColorPicker />
-    </MainCard>
-);
+const BarChart = () => <MainCard>123</MainCard>;
 
 export default BarChart;

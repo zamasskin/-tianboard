@@ -4,7 +4,6 @@ import { DataGrid as MuiDataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
 
 import MainCard from 'ui-component/cards/MainCard';
-
 import { getRows } from './helpers';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
 import { defaultConfig } from './config';
@@ -22,7 +21,7 @@ const DataGrid = ({ data, settings }) => {
         <MainCard>
             <Grid item xs={12}>
                 <div style={{ width, height }}>
-                    <MuiDataGrid rows={getRows(data)} columns={columns} {...props} />
+                    <MuiDataGrid rows={getRows(data, componentSettings)} columns={columns} {...props} />
                 </div>
             </Grid>
         </MainCard>

@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
+import { HyperFormula } from 'hyperformula';
 
 export const defWidth = 120;
 export const defAlign = 'left';
@@ -91,4 +92,28 @@ export const getSelection = (data, settings) => {
     return settings?.dataGridColumnSelection || keys;
 };
 
-export const getRows = (data) => data.map((items) => ({ ...items, id: items.id || uuidv4() }));
+export const getRows = (data, settings) => {
+    const options = {
+        licenseKey: 'gpl-v3'
+    };
+
+    const hf = HyperFormula.buildFromArray(
+        data.map((items) => Object.values(items)),
+        options
+    );
+
+    const { columns } = settings;
+
+    const prepareData = data.map((items, i) => {
+        Object.entries(columns).forEach(([key, value]) => {
+            const { formula } = value;
+            if (formula) {
+                const prepareFormula = formula.replace(/this\.(\w)+/g, `$1${i + 1}`);
+                items[key] = hf.calculateFormula(prepareFormula, 0);
+            }
+        });
+        return { id: uuidv4(), ...items };
+    });
+
+    return prepareData;
+};

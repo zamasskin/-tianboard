@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import YAML from 'yaml';
 
 import DataGrid from './DataGrid';
@@ -13,7 +12,7 @@ const components = {
 
 export const defaultConfig = {
     DataGrid: (data) => dataGridConfig(data), // dataGridConfig(data),
-    BarChart: (data) => ''
+    BarChart: () => ''
 };
 
 export const getSettings = (settings, data, isJson = false) => {

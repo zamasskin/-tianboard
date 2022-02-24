@@ -1,6 +1,5 @@
-import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 import { Grid } from '@mui/material';
-import ToggleButtonMui from '@mui/material/ToggleButton';
 
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,5 +23,10 @@ const ComponentSelector = ({ value = 'DataGrid', onChange }) => (
         </Grid>
     </Grid>
 );
+
+ComponentSelector.propTypes = {
+    value: PropTypes.string,
+    onChange: PropTypes.func
+};
 
 export default ComponentSelector;

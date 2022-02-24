@@ -1,13 +1,8 @@
 import PropTypes from 'prop-types';
 import { Grid } from '@mui/material';
-import Editor, { useMonaco } from '@monaco-editor/react';
 import _ from 'lodash';
 
 import EmptyDashboard from './empty';
-import ComponentSelector from './ComponentSelector';
-
-import MainCard from 'ui-component/cards/MainCard';
-
 import components from 'ui-component/DashboardComponents';
 
 const DashboardEditor = ({ onChange, data, settings = { component: 'DataGrid' }, edit = false }) => {

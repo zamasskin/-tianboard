@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Grid } from '@mui/material';
 import Editor from '@monaco-editor/react';
-import YAML from 'yaml';
 
 import MainCard from 'ui-component/cards/MainCard';
 import { getSettings } from 'ui-component/DashboardComponents';
