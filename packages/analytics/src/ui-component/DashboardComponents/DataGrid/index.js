@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import MainCard from 'ui-component/cards/MainCard';
 
-import { getRows, getColumns } from './helpers';
+import { getRows } from './helpers';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
 import { defaultConfig } from './config';
 

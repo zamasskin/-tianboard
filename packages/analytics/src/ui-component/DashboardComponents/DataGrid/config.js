@@ -15,7 +15,10 @@ const exampleJson = {
     columns: {
         A: { headerName: 'A', with: 100, align: 'left', headerAlign: 'left' },
         N: 'details: --- https://mui.com/api/data-grid/grid-col-def/#properties'
-    }
+    },
+    height: 500,
+    width: '100%',
+    props: 'Тут можно переопределить свойства компонента'
 };
 
 const example = ['###########Example###########', YAML.stringify(exampleJson).replace(/(^)|(\n)/gi, '$&#'), ''].join('\n');

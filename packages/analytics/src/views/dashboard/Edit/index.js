@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import YAML from 'yaml';
 
 import QueryEditor from 'editor-components/dashboard/QueryEditor';
 import DashboardEditor from 'editor-components/dashboard/DashboardEditor';
@@ -33,7 +34,7 @@ function DashboardEdit() {
                         onChange={({ target: { value } }) => setSettings({ ...settings, component: value })}
                     />
                     <DashboardEditor data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
-                    <SettingsEdit data={data} settings={settings} />
+                    <SettingsEdit data={data} settings={settings} onChange={(settings) => setSettings(settings)} />
                 </>
             )}
         </Grid>
