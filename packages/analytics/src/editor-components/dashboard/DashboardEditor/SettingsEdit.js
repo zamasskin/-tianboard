@@ -14,7 +14,7 @@ const SettingsEdit = ({ settings, data, onChange }) => (
                     <Editor
                         language="yaml"
                         height="20vh"
-                        defaultValue={getSettings(settings, data)}
+                        value={getSettings(settings, data)}
                         onChange={(code) => onChange && onChange(mergeSetting(settings, code))}
                     />
                 </Grid>

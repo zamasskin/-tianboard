@@ -12,7 +12,7 @@ const ComponentSelector = ({ value = 'DataGrid', onChange }) => (
     <Grid item xs={12}>
         <Grid container wrap="nowrap" spacing={8} sx={{ overflow: 'auto' }}>
             <Grid item>
-                <Select onChange={onChange} defaultValue={value}>
+                <Select onChange={onChange} value={value}>
                     {components.map((component) => (
                         <MenuItem value={component} key={component}>
                             {component}
