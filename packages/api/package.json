@@ -34,7 +34,8 @@
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "mysql2": "^2.3.3",
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
