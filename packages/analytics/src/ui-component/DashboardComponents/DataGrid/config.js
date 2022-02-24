@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import YAML from 'yaml';
 
-const parseConfig = (data) => ({
+export const defaultConfig = (data) => ({
     columns: _.chain(data)
         .head()
         .keys()
         .reduce((old, field) => ({ ...old, [field]: { headerName: field } }), {})
-        .value()
+        .value(),
+    height: 500,
+    width: '100%'
 });
 
 const exampleJson = {
@@ -18,6 +20,6 @@ const exampleJson = {
 
 const example = ['###########Example###########', YAML.stringify(exampleJson).replace(/(^)|(\n)/gi, '$&#'), ''].join('\n');
 
-const config = (data) => example + YAML.stringify(parseConfig(data));
+const config = (data) => example + YAML.stringify(defaultConfig(data));
 
 export default config;

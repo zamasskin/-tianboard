@@ -6,19 +6,23 @@ import PropTypes from 'prop-types';
 import MainCard from 'ui-component/cards/MainCard';
 
 import { getRows, getColumns } from './helpers';
-// import { getSettingsName } from '..';
-import config from './config';
+import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
+import { defaultConfig } from './config';
 
 const DataGrid = ({ data, settings }) => {
-    const settingsName = 'DataGridSettings';
-    const componentSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
+    const settingsName = getSettingsName('DataGrid');
+    const componentSettings = _.has(settings, settingsName) ? settings[settingsName] : defaultConfig(data);
+
+    const { width = '100%', height = 500, columns: configColumns, props = {} } = componentSettings;
+    const columns = _.chain(configColumns)
+        .map((settings, field) => ({ ...settings, field }))
+        .value();
 
     return (
         <MainCard>
             <Grid item xs={12}>
-                <div style={{ height: 500, width: '100%' }}>
-                    1234
-                    {/* <MuiDataGrid rows={getRows(data)} columns={getColumns(data, settings)} /> */}
+                <div style={{ width, height }}>
+                    <MuiDataGrid rows={getRows(data)} columns={columns} {...props} />
                 </div>
             </Grid>
         </MainCard>
