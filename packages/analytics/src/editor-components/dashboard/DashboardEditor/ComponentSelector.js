@@ -5,7 +5,7 @@ import ToggleButtonMui from '@mui/material/ToggleButton';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import DashboardComponents from './DashboardComponents';
+import DashboardComponents from 'ui-component/DashboardComponents';
 
 const components = Object.keys(DashboardComponents);
 

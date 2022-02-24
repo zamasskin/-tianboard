@@ -8,7 +8,7 @@ import ComponentSelector from './ComponentSelector';
 
 import MainCard from 'ui-component/cards/MainCard';
 
-import components from './DashboardComponents';
+import components from 'ui-component/DashboardComponents';
 
 const DashboardEditor = ({ onChange, data, settings = { component: 'DataGrid' }, edit = false }) => {
     const { component } = settings;

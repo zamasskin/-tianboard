@@ -4,7 +4,7 @@ import Editor from '@monaco-editor/react';
 import YAML from 'yaml';
 
 import MainCard from 'ui-component/cards/MainCard';
-import { getSettings } from './DashboardComponents';
+import { getSettings } from 'ui-component/DashboardComponents';
 
 const SettingsEdit = ({ settings, data }) => (
     <Grid item xs={12}>
