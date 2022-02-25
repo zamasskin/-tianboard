@@ -3,10 +3,11 @@ import Alert from '@mui/material/Alert';
 import _ from 'lodash';
 
 import DataGrid from './DataGrid/DataGridSettings';
+import BarChart from './BarChart/BarChartSettings';
 
 const components = {
     DataGrid,
-    BarChart: () => <div>123</div>
+    BarChart
 };
 
 const Settings = ({ onChange, data, settings = { component: 'DataGrid' } }) => {
