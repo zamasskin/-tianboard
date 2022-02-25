@@ -1,6 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import { HyperFormula } from 'hyperformula';
+import YAML from 'yaml';
+
+import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
+import { defaultConfig } from './config';
 
 export const defWidth = 120;
 export const defAlign = 'left';
@@ -32,18 +36,12 @@ export const settingsColumns = [
         editable: true,
         type: 'singleSelect',
         valueOptions: valueAlign
-    },
-    { field: 'order', headerName: 'Сортировка', width: 80, editable: true, type: 'number' }
+    }
 ];
 
 export const defaultColumn = (key) => ({
     field: key,
-    headerName: key,
-    hide: false,
-    width: defWidth,
-    align: defAlign,
-    headerAlign: defHeaderAlign,
-    order: 500
+    headerName: key
 });
 
 export const getColumns = (data, settings) => {
@@ -57,9 +55,14 @@ export const getColumns = (data, settings) => {
         .value();
 };
 
+const parseSettings = (data, settings) => {
+    const settingsName = getSettingsName('DataGrid');
+    return _.has(settings, settingsName) ? YAML.parse(settings[settingsName]) : defaultConfig(data);
+};
+
 export const getSettingsRows = (data, settings) => {
-    const { dataGridColumnsSetting = {} } = settings;
-    const getSettings = (key) => dataGridColumnsSetting[key] || defaultColumn(key);
+    const { columns = {} } = parseSettings(data, settings);
+    const getSettings = (key) => columns[key] || defaultColumn(key);
 
     const keys = _.chain(data).head().keys().value();
     return keys.map((key) => ({
@@ -68,28 +71,41 @@ export const getSettingsRows = (data, settings) => {
     }));
 };
 
-export const getUpdateSettings = (newSettings, oldSettings) => {
-    const { dataGridColumnsSetting = {} } = oldSettings;
-    const defaults = _.chain(newSettings)
-        .keys()
-        .map((key) => defaultColumn(key))
+export const getUpdateSettings = (newSettings, settings) => {
+    const { columns = {} } = settings;
+
+    const prepareNewColumns = _.chain(newSettings)
+        .mapValues((setting) => _.mapValues(setting, ({ value }) => value))
+        .value();
+    const newColumns = _.chain(columns)
         .keyBy('field')
+        .merge(prepareNewColumns)
+        .mapValues((value) => _.omit(value, 'field'))
         .value();
 
-    const newDataGridColumnsSetting = _.merge(
-        defaults,
-        dataGridColumnsSetting,
-        _.chain(newSettings)
-            .mapValues((setting) => _.mapValues(setting, ({ value }) => value))
-            .value()
-    );
+    const code = YAML.stringify({ ...settings, columns: newColumns });
+    return code;
+};
 
-    return { ...oldSettings, dataGridColumnsSetting: newDataGridColumnsSetting };
+export const getCodeWhenSelected = (selected, settings) => {
+    const { columns } = settings;
+    const selectedValues = _.chain(selected)
+        .map((field) => ({ headerName: field }))
+        .keyBy('headerName')
+        .value();
+    const columnsObj = _.chain(columns)
+        .keyBy('field')
+        .mapValues((value) => _.omit(value, 'field'))
+        .value();
+    const newColumns = _.chain(selectedValues).merge(columnsObj).pick(selected).value();
+    const code = YAML.stringify({ ...settings, columns: newColumns });
+    return code;
 };
 
 export const getSelection = (data, settings) => {
+    const { columns } = parseSettings(data, settings);
     const keys = _.chain(data).head().keys().value();
-    return settings?.dataGridColumnSelection || keys;
+    return columns ? _.keys(columns) : keys;
 };
 
 export const getRows = (data, settings) => {
@@ -116,4 +132,18 @@ export const getRows = (data, settings) => {
     });
 
     return prepareData;
+};
+
+export const getSettings = (data, settings) => {
+    try {
+        const settingsName = getSettingsName('DataGrid');
+        const componentSettings = _.has(settings, settingsName) ? YAML.parse(settings[settingsName]) : defaultConfig(data);
+        const { width = '100%', height = 500, columns: configColumns } = componentSettings;
+        const columns = _.chain(configColumns)
+            .map((settings, field) => ({ ...settings, field }))
+            .value();
+        return { ...componentSettings, width, height, columns };
+    } catch (error) {
+        return { width: '100%', height: 500, columns: [], error };
+    }
 };

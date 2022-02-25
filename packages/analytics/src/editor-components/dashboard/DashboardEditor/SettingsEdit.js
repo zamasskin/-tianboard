@@ -5,6 +5,7 @@ import Editor from '@monaco-editor/react';
 import MainCard from 'ui-component/cards/MainCard';
 import { getSettings } from 'ui-component/DashboardComponents';
 import { mergeSetting } from 'editor-components/dashboard/DashboardEditor/constant';
+import DashboardSettings from 'ui-component/DashboardComponents/Settings';
 
 const SettingsEdit = ({ settings, data, onChange }) => (
     <Grid item xs={12}>
@@ -13,13 +14,17 @@ const SettingsEdit = ({ settings, data, onChange }) => (
                 <Grid item xs>
                     <Editor
                         language="yaml"
-                        height="20vh"
+                        height="50vh"
                         value={getSettings(settings, data)}
                         onChange={(code) => onChange && onChange(mergeSetting(settings, code))}
                     />
                 </Grid>
                 <Grid item xs>
-                    123
+                    <DashboardSettings
+                        settings={settings}
+                        data={data}
+                        onChange={(code) => onChange && onChange(mergeSetting(settings, code))}
+                    />
                 </Grid>
             </Grid>
         </MainCard>

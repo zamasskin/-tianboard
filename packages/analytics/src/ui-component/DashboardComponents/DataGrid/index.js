@@ -6,29 +6,13 @@ import PropTypes from 'prop-types';
 import YAML from 'yaml';
 
 import MainCard from 'ui-component/cards/MainCard';
-import { getRows } from './helpers';
-import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
-import { defaultConfig } from './config';
+import { getSettings, getRows } from './helpers';
 import { gridSpacing } from 'store/constant';
 
-const getSettings = (data, settings) => {
-    try {
-        const settingsName = getSettingsName('DataGrid');
-        const componentSettings = _.has(settings, settingsName) ? YAML.parse(settings[settingsName]) : defaultConfig(data);
-
-        const { width = '100%', height = 500, columns: configColumns, props = {} } = componentSettings;
-        const columns = _.chain(configColumns)
-            .map((settings, field) => ({ ...settings, field }))
-            .value();
-        const rows = getRows(data, componentSettings);
-        return { width, height, props, columns, rows };
-    } catch (error) {
-        return { width: '100%', height: 500, props: {}, columns: [], rows: [], error };
-    }
-};
-
 const DataGrid = ({ data, settings }) => {
-    const { columns = [], rows = [], width = '100%', height = 500, props = {}, error } = getSettings(data, settings);
+    const componentSettings = getSettings(data, settings);
+    const { columns = [], width = '100%', height = 500, props = {}, error } = getSettings(data, settings);
+    const rows = getRows(data, componentSettings);
 
     return (
         <MainCard>
