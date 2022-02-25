@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import DashboardComponents from 'ui-component/DashboardComponents';
+import { components as DashboardComponents } from 'ui-component/DashboardComponents';
 
 const components = Object.keys(DashboardComponents);
 

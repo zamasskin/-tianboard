@@ -10,13 +10,16 @@ const SettingsEdit = ({ settings, data, onChange }) => (
     <Grid item xs={12}>
         <MainCard>
             <Grid container>
-                <Grid item xs={12}>
+                <Grid item xs>
                     <Editor
                         language="yaml"
                         height="20vh"
                         value={getSettings(settings, data)}
                         onChange={(code) => onChange && onChange(mergeSetting(settings, code))}
                     />
+                </Grid>
+                <Grid item xs>
+                    123
                 </Grid>
             </Grid>
         </MainCard>

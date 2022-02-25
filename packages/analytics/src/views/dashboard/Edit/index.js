@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 
 import QueryEditor from 'editor-components/dashboard/QueryEditor';
-import DashboardEditor from 'editor-components/dashboard/DashboardEditor';
 import ComponentSelector from 'editor-components/dashboard/DashboardEditor/ComponentSelector';
+import Dashboard from 'ui-component/DashboardComponents';
 
 import { gridSpacing } from 'store/constant';
 import { useState } from 'react';
@@ -72,7 +72,10 @@ function DashboardEdit() {
                         value={settings.component}
                         onChange={({ target: { value } }) => setSettings({ ...settings, component: value })}
                     />
-                    <DashboardEditor data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
+                    <Grid item xs={12}>
+                        <Dashboard data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
+                    </Grid>
+
                     <SettingsEdit data={data} settings={settings} onChange={onChangeSettings} />
                 </>
             )}
