@@ -28,15 +28,7 @@ const getSettings = (data, settings) => {
 };
 
 const DataGrid = ({ data, settings }) => {
-    const {
-        columns = [],
-        rows = [],
-        width = '100%',
-        height = 500,
-        columns: configColumns,
-        props = {},
-        error
-    } = getSettings(data, settings);
+    const { columns = [], rows = [], width = '100%', height = 500, props = {}, error } = getSettings(data, settings);
 
     return (
         <MainCard>
