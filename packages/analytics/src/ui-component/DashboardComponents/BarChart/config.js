@@ -15,7 +15,7 @@ export const defaultConfig = (data) => {
         .value();
 
     return {
-        series: keys.map((name) => ({
+        series: keys.slice(0, 5).map((name) => ({
             name,
             data:
                 // { eval: 'console.log(this)' }
@@ -121,10 +121,14 @@ export const parseSettings = (settings, data) =>
               .value();
 
 export function getConfig(settings, data) {
-    const settingsName = getSettingsName('DataGrid');
-    let componentSettings = _.has(settings, settingsName) ? settings[settingsName] : defaultConfig(data);
-    componentSettings = parseSettings(componentSettings, data);
-    return componentSettings;
+    try {
+        const settingsName = getSettingsName('BarChart');
+        let componentSettings = _.has(settings, settingsName) ? YAML.parse(settings[settingsName]) : defaultConfig(data);
+        componentSettings = parseSettings(componentSettings, data);
+        return componentSettings;
+    } catch (e) {
+        return { error: e.message };
+    }
 }
 const conf = (data) => YAML.stringify(defaultConfig(data)) + example;
 export default conf;

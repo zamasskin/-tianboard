@@ -9,6 +9,7 @@ import { useState } from 'react';
 import SettingsEdit from 'editor-components/dashboard/DashboardEditor/SettingsEdit';
 
 function DashboardEdit() {
+    const defaultSettings = { component: 'DataGrid' };
     const [data, setData] = useState([
         {
             id: 1,
@@ -43,13 +44,26 @@ function DashboardEdit() {
             quantity: 1
         }
     ]);
-    const [settings, setSettings] = useState({ component: 'BarChart' });
+    const [settings, setSettings] = useState(defaultSettings);
+
+    const onResult = (data) => {
+        setSettings(defaultSettings);
+        setData(data);
+    };
+
+    let timeout = false;
+    const onChangeSettings = (settings) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => setSettings(settings), 1000);
+    };
 
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
                 <Grid item>
-                    <QueryEditor onResult={(data) => setData(data)} />
+                    <QueryEditor onResult={onResult} />
                 </Grid>
             </Grid>
             {data && (
@@ -59,7 +73,7 @@ function DashboardEdit() {
                         onChange={({ target: { value } }) => setSettings({ ...settings, component: value })}
                     />
                     <DashboardEditor data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
-                    <SettingsEdit data={data} settings={settings} onChange={(settings) => setSettings(settings)} />
+                    <SettingsEdit data={data} settings={settings} onChange={onChangeSettings} />
                 </>
             )}
         </Grid>

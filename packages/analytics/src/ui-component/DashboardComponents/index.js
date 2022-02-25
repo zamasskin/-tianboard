@@ -20,7 +20,7 @@ export const getSettings = (settings, data, isJson = false) => {
     const componentName = settings.component;
     const settingsName = getSettingsName(componentName);
     if (settings[settingsName]) {
-        return isJson ? settings[settingsName] : YAML.stringify(settings[settingsName]);
+        return isJson ? YAML.parse(settings[settingsName]) : settings[settingsName];
     }
     return isJson ? YAML.parse(defaultConfig[componentName](data)) : defaultConfig[componentName](data);
 };
