@@ -1,9 +1,7 @@
-import _ from 'lodash';
 import { Grid } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { DataGrid as MuiDataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
-import YAML from 'yaml';
 
 import MainCard from 'ui-component/cards/MainCard';
 import { getSettings, getRows } from './helpers';

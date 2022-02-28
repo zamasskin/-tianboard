@@ -13,7 +13,7 @@ function DashboardEdit() {
     const [data, setData] = useState([
         {
             id: 1,
-            name: 'example',
+            name: 'example 01',
             description:
                 'Consequat non nostrud velit culpa consectetur sunt occaecat nulla ullamco culpa cillum labore enim proident. Tempor deserunt irure adipisicing nulla ut cillum adipisicing id fugiat incididunt adipisicing dolore. Aliqua deserunt excepteur tempor esse eu cillum velit est duis reprehenderit culpa. Eu enim voluptate est occaecat ullamco cillum amet aliquip consectetur amet. Reprehenderit quis ex dolor qui sint officia dolor veniam incididunt pariatur veniam incididunt. Ut deserunt sit nostrud do sunt do consequat do id duis excepteur quis eiusmod veniam.',
             price: 100,
@@ -21,7 +21,7 @@ function DashboardEdit() {
         },
         {
             id: 2,
-            name: 'example',
+            name: 'example 02',
             description:
                 'Consequat non nostrud velit culpa consectetur sunt occaecat nulla ullamco culpa cillum labore enim proident. Tempor deserunt irure adipisicing nulla ut cillum adipisicing id fugiat incididunt adipisicing dolore. Aliqua deserunt excepteur tempor esse eu cillum velit est duis reprehenderit culpa. Eu enim voluptate est occaecat ullamco cillum amet aliquip consectetur amet. Reprehenderit quis ex dolor qui sint officia dolor veniam incididunt pariatur veniam incididunt. Ut deserunt sit nostrud do sunt do consequat do id duis excepteur quis eiusmod veniam.',
             price: 300,
@@ -29,7 +29,7 @@ function DashboardEdit() {
         },
         {
             id: 3,
-            name: 'example',
+            name: 'example 03',
             description:
                 'Consequat non nostrud velit culpa consectetur sunt occaecat nulla ullamco culpa cillum labore enim proident. Tempor deserunt irure adipisicing nulla ut cillum adipisicing id fugiat incididunt adipisicing dolore. Aliqua deserunt excepteur tempor esse eu cillum velit est duis reprehenderit culpa. Eu enim voluptate est occaecat ullamco cillum amet aliquip consectetur amet. Reprehenderit quis ex dolor qui sint officia dolor veniam incididunt pariatur veniam incididunt. Ut deserunt sit nostrud do sunt do consequat do id duis excepteur quis eiusmod veniam.',
             price: 200,
@@ -37,7 +37,7 @@ function DashboardEdit() {
         },
         {
             id: 4,
-            name: 'example',
+            name: 'example 04',
             description:
                 'Consequat non nostrud velit culpa consectetur sunt occaecat nulla ullamco culpa cillum labore enim proident. Tempor deserunt irure adipisicing nulla ut cillum adipisicing id fugiat incididunt adipisicing dolore. Aliqua deserunt excepteur tempor esse eu cillum velit est duis reprehenderit culpa. Eu enim voluptate est occaecat ullamco cillum amet aliquip consectetur amet. Reprehenderit quis ex dolor qui sint officia dolor veniam incididunt pariatur veniam incididunt. Ut deserunt sit nostrud do sunt do consequat do id duis excepteur quis eiusmod veniam.',
             price: 500,

@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 import Alert from '@mui/material/Alert';
 
 import MainCard from 'ui-component/cards/MainCard';
-import { getConfig } from './config';
+import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
+// import { getConfig } from './config';
+import createStorage from './storage';
 
 const BarChart = ({ data, settings }) => {
-    const { series = {}, options = {}, error } = getConfig(settings, data);
+    const settingsName = getSettingsName('BarChart');
+    const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
+    const storage = createStorage(jsonSettings);
+    const { series = {}, options = {}, error } = storage.$values(data);
     return (
         <MainCard>
             <Chart options={options} series={_.values(series)} type="bar" height={350} />
