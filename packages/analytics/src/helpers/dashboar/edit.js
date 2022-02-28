@@ -99,7 +99,7 @@ export function boolean(value, defaultValue = false) {
     return {
         value,
         defaultValue,
-        type: types.boolean,
+        $type: types.boolean,
         getValues() {
             const value = this.value || this.defaultValue;
             return _.isBoolean(value) ? !!value : false;
@@ -117,7 +117,7 @@ export function string(value, defaultValue = '') {
     return {
         value,
         defaultValue,
-        type: types.string,
+        $type: types.string,
         getValues() {
             return _.toString(this.value || this.defaultValue || '');
         },
@@ -134,7 +134,7 @@ export function number(value, defaultValue = 0) {
     return {
         value,
         defaultValue,
-        type: types.number,
+        $type: types.number,
         getValues() {
             return _.toNumber(this.value) || toNumber(this.defaultValue) || 0;
         },
@@ -151,7 +151,7 @@ export function data(value, defaultValue = '') {
     return {
         value,
         defaultValue,
-        type: types.data,
+        $type: types.data,
         getValues(data) {
             const value = this.value || this.defaultValue;
             return _.isArray(data) ? data.map((val) => _.get(val, value)).filter((val) => !!val) : [];
@@ -169,7 +169,7 @@ export function arrayOf(value, defaultValue = []) {
     return {
         value,
         defaultValue,
-        type: types.arrayOf,
+        $type: types.arrayOf,
         getValues(data) {
             const value = this.value || this.defaultValue;
             return _.isArray(value) ? value.map((settings) => parseValue({ settings, data })) : [];
@@ -188,7 +188,8 @@ export function objectOf(value, defaultValue = {}) {
     let values = { ...(value || defaultValue || {}) };
     return {
         ...value,
-        type: types.objectOf,
+        $hiddenKeys: [],
+        $type: types.objectOf,
         getValues(data) {
             return _.isObject(values) ? _.mapValues(values, (settings) => parseValue({ settings, data })) : {};
         },
@@ -197,6 +198,12 @@ export function objectOf(value, defaultValue = {}) {
         },
         setValue(newValue) {
             values = newValue;
+        },
+        showKey(key) {
+            this.$hiddenKeys = [...this.$hiddenKeys, key];
+        },
+        hideKey(key) {
+            return this.$hiddenKeys.filter((hiddenKey) => hiddenKey !== key);
         }
     };
 }
@@ -205,7 +212,7 @@ export function variantOf(value, defaultValue = '') {
     return {
         value,
         defaultValue,
-        type: types.variantOf,
+        $type: types.variantOf,
         getValues(data) {
             return data;
         },
@@ -221,7 +228,7 @@ export function variantOf(value, defaultValue = '') {
 export function templateFn(value, argsName = []) {
     return {
         value,
-        type: types.templateFn,
+        $type: types.templateFn,
         getValues() {
             const value = this.value;
             if (!(_.isString(value) && value.length > 0)) {

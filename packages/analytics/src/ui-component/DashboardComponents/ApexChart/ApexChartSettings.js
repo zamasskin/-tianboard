@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Grid, Typography, Box, List, ListItem } from '@mui/material';
+import { Grid, Typography, Box, List, ListItem, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 // import Alert from '@mui/material/Alert';
 // import Editor from '@monaco-editor/react';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -29,32 +29,31 @@ const ApexChartSettings = ({ data, settings, onChange }) => {
         timeout = setTimeout(call, tm);
     };
 
-    // const [jsonError, setJsonError] = useState(false);
-    // const onCodeChange = (json) => {
-    //     setJsonError(false);
-    //     try {
-    //         const newSettings = JSON.parse(json);
-    //         if (onChange) {
-    //             onChange(newSettings);
-    //         }
-    //     } catch (e) {
-    //         setJsonError(e.message);
-    //     }
-    // };
-
     const exampleCode = `$ \${val} thousands`;
 
+    console.log(storage.$getSettingValues('options.chart.type'));
     return (
         <Grid container>
+            <Grid item xs={12} />
             <Grid item xs={12}>
-                <AccordionDefault title="График" defaultExpand={false}>
-                    11
-                </AccordionDefault>
-            </Grid>
-            <Grid item xs={12}>
-                <AccordionDefault title="Данные" defaultExpand>
+                <AccordionDefault title="Общие настройки" defaultExpand>
                     <Box>
                         <List>
+                            <ListItem>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Тип графика</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        value={storage.$getSettingValues('options.chart.type')}
+                                        label="Тип графика"
+                                        onChange={(ev) => storage.$setValue('options.chart.type', ev.target.value)}
+                                    >
+                                        <MenuItem value="bar">Column Charts</MenuItem>
+                                        <MenuItem value="area">Area Charts</MenuItem>
+                                        <MenuItem value="line">Line Charts</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </ListItem>
                             <ListItem>
                                 <Autocomplete
                                     disablePortal
@@ -151,6 +150,11 @@ const ApexChartSettings = ({ data, settings, onChange }) => {
                             </ListItem>
                         </List>
                     </Box>
+                </AccordionDefault>
+            </Grid>
+            <Grid item xs={12}>
+                <AccordionDefault title="stroke" defaultExpand={false} sx={{ width: '100%' }}>
+                    1
                 </AccordionDefault>
             </Grid>
             {/* <Grid item xs={12}>

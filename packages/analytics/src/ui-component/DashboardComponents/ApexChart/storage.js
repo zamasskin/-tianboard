@@ -1,14 +1,37 @@
 import { objectOf, arrayOf, number, string, boolean, data, caValues, canSettings, templateFn } from 'helpers/dashboar/edit';
 import { series } from '../helpers';
 
-function createDefault(type, settings) {
-    return {
-        type,
+const getChartType = (type) => type;
+
+function createStorage(settings) {
+    let stokeColors;
+    let strokeCurve;
+    const type = settings?.options?.chart?.type || 'bar';
+    if (type === 'bar') {
+        stokeColors = arrayOf(settings?.options?.stroke?.colors, ['transparent']);
+    }
+
+    switch (type) {
+        case 'bar':
+            stokeColors = arrayOf(settings?.options?.stroke?.colors, ['transparent']);
+            break;
+        case 'line':
+            strokeCurve = arrayOf(settings?.options?.chart?.type, []);
+            break;
+        case 'area':
+            strokeCurve = arrayOf(settings?.options?.chart?.type, []);
+            break;
+        default:
+            stokeColors = undefined;
+    }
+
+    const storage = {
         settings: objectOf({
+            type: string(getChartType(settings?.options?.chart?.type), 'bar'),
             series: series(settings?.series),
             options: objectOf({
                 chart: objectOf({
-                    type: string(settings?.options?.chart?.type, type),
+                    type: string(settings?.options?.chart?.type, 'bar'),
                     height: number(settings?.options?.chart?.height, 350)
                 }),
                 plotOptions: objectOf({
@@ -24,7 +47,8 @@ function createDefault(type, settings) {
                 stroke: objectOf({
                     show: boolean(settings?.options?.stroke?.show, true),
                     width: number(settings?.options?.stroke?.width, 2),
-                    colors: arrayOf(settings?.options?.stroke?.colors, ['transparent'])
+                    colors: stokeColors
+                    // curve: strokeCurve
                 }),
                 xaxis: objectOf({
                     categories: data(settings?.options?.xaxis?.categories)
@@ -49,10 +73,6 @@ function createDefault(type, settings) {
             })
         })
     };
-}
-
-function createStorage(settings) {
-    const storage = createDefault('bar', settings);
     return {
         ...storage,
         ...caValues(storage),
