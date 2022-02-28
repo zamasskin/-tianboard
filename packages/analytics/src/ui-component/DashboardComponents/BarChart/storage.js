@@ -2,7 +2,6 @@ import { objectOf, arrayOf, number, string, boolean, data, caValues, canSettings
 import { series } from '../helpers';
 
 function createStorage(settings) {
-    const fn = (val) => {};
     const storage = {
         settings: objectOf({
             series: series(settings?.series),
