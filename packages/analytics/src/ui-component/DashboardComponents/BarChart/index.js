@@ -13,6 +13,7 @@ const BarChart = ({ data, settings }) => {
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
     const storage = createStorage(jsonSettings);
     const { series = {}, options = {}, error } = storage.$values(data);
+    console.log(options);
     return (
         <MainCard>
             <Chart options={options} series={_.values(series)} type="bar" height={350} />

@@ -41,6 +41,10 @@ function createStorage(settings) {
                     y: objectOf({
                         formatter: templateFn(settings?.options?.tooltip?.y?.formatter, ['val'])
                     })
+                }),
+                title: objectOf({
+                    text: string(settings?.options?.title?.text),
+                    align: string(settings?.options?.title?.align)
                 })
             })
         })

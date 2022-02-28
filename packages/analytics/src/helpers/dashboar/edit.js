@@ -45,9 +45,16 @@ export function caValues({ settings }) {
 
 export function canSettings({ settings }) {
     return {
-        $onSettingsChange: false,
+        $$change() {
+            if (_.isFunction(this.$onSettingsChange)) {
+                this.$onSettingsChange(this.$settings());
+            }
+        },
         $settings() {
             return parseSettings({ settings });
+        },
+        $registerChange(onChange) {
+            this.$onSettingsChange = onChange;
         },
         $settingsJson() {
             return JSON.stringify(this.$settings());
@@ -57,9 +64,7 @@ export function canSettings({ settings }) {
             if (_.isFunction(childSettings?.setValue)) {
                 childSettings.setValue(newValue);
             }
-            if (_.isFunction(this.$onSettingsChange)) {
-                this.$onSettingsChange(this.$settings());
-            }
+            this.$$change();
         },
         $call(path, ...params) {
             const call = _.get(settings, path);
@@ -77,6 +82,15 @@ export function canSettings({ settings }) {
         },
         $get(path) {
             return _.get(settings, path);
+        },
+        $exec(path, method, ...args) {
+            const child = _.get(settings, path);
+            if (!child || !_.isFunction(child[method])) {
+                return false;
+            }
+            const result = child[method].call(child, ...args);
+            this.$$change();
+            return result;
         }
     };
 }
