@@ -1,13 +1,14 @@
 import { objectOf, arrayOf, number, string, boolean, data, caValues, canSettings, templateFn } from 'helpers/dashboar/edit';
 import { series } from '../helpers';
 
-function createStorage(settings) {
-    const storage = {
+function createDefault(type, settings) {
+    return {
+        type,
         settings: objectOf({
             series: series(settings?.series),
             options: objectOf({
                 chart: objectOf({
-                    type: string(settings?.options?.chart?.type, 'bar'),
+                    type: string(settings?.options?.chart?.type, type),
                     height: number(settings?.options?.chart?.height, 350)
                 }),
                 plotOptions: objectOf({
@@ -48,6 +49,10 @@ function createStorage(settings) {
             })
         })
     };
+}
+
+function createStorage(settings) {
+    const storage = createDefault('bar', settings);
     return {
         ...storage,
         ...caValues(storage),

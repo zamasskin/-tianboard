@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Grid, Typography, Box, List, ListItem } from '@mui/material';
-// import Chip from '@mui/material/Chip';
+// import Alert from '@mui/material/Alert';
+// import Editor from '@monaco-editor/react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
@@ -10,10 +11,12 @@ import Align from 'ui-component/Autocomplete/Align';
 
 import createStorage from './storage';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
+// import { useState } from 'react';
 
 const BarChartSettings = ({ data, settings, onChange }) => {
     const settingsName = getSettingsName('BarChart');
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
+    console.log(jsonSettings);
     const storage = createStorage(jsonSettings);
     const keys = _.chain(data).head().keys().value();
     let timeout;
@@ -27,10 +30,28 @@ const BarChartSettings = ({ data, settings, onChange }) => {
         timeout = setTimeout(call, tm);
     };
 
+    // const [jsonError, setJsonError] = useState(false);
+    // const onCodeChange = (json) => {
+    //     setJsonError(false);
+    //     try {
+    //         const newSettings = JSON.parse(json);
+    //         if (onChange) {
+    //             onChange(newSettings);
+    //         }
+    //     } catch (e) {
+    //         setJsonError(e.message);
+    //     }
+    // };
+
     const exampleCode = `$ \${val} thousands`;
 
     return (
         <Grid container>
+            <Grid item xs={12}>
+                <AccordionDefault title="График" defaultExpand={false}>
+                    11
+                </AccordionDefault>
+            </Grid>
             <Grid item xs={12}>
                 <AccordionDefault title="Данные" defaultExpand>
                     <Box>
@@ -133,6 +154,22 @@ const BarChartSettings = ({ data, settings, onChange }) => {
                     </Box>
                 </AccordionDefault>
             </Grid>
+            {/* <Grid item xs={12}>
+                <AccordionDefault title="Тонкая настройка" defaultExpand={false}>
+                    <Editor
+                        height="30vh"
+                        defaultLanguage="json"
+                        value={storage.$settingsJson()}
+                        options={{
+                            minimap: {
+                                enabled: false
+                            }
+                        }}
+                        onChange={(val) => tm(() => onCodeChange(val), 500)}
+                    />
+                    {jsonError && <Alert severity="error">{jsonError}</Alert>}
+                </AccordionDefault>
+            </Grid> */}
         </Grid>
     );
 };

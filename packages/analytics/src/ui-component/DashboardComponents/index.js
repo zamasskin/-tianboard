@@ -6,8 +6,8 @@ import _ from 'lodash';
 
 import DataGrid from './DataGrid';
 import dataGridConfig from './DataGrid/config';
-import BarChart from './BarChart';
-import barChartConfig from './BarChart/config';
+import BarChart from './ApexChart';
+import barChartConfig from './ApexChart/config';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
 import EmptyDashboard from './empty';
 

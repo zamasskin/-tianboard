@@ -57,7 +57,7 @@ export function canSettings({ settings }) {
             this.$onSettingsChange = onChange;
         },
         $settingsJson() {
-            return JSON.stringify(this.$settings());
+            return JSON.stringify(this.$settings(), undefined, 4);
         },
         $setValue(path, newValue) {
             const childSettings = _.get(settings, path);
