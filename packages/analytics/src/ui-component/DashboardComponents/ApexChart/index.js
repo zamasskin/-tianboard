@@ -8,12 +8,11 @@ import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/con
 // import { getConfig } from './config';
 import createStorage from './storage';
 
-const BarChart = ({ data, settings }) => {
-    const settingsName = getSettingsName('BarChart');
+const ApexChart = ({ data, settings }) => {
+    const settingsName = getSettingsName('ApexChartSettings');
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
     const storage = createStorage(jsonSettings);
     const { series = {}, options = {}, error } = storage.$values(data);
-    console.log(options);
     return (
         <MainCard>
             <Chart options={options} series={_.values(series)} type="bar" height={350} />
@@ -22,9 +21,9 @@ const BarChart = ({ data, settings }) => {
     );
 };
 
-BarChart.propTypes = {
+ApexChart.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     settings: PropTypes.object
 };
 
-export default BarChart;
+export default ApexChart;

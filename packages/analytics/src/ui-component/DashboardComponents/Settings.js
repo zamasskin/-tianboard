@@ -3,11 +3,11 @@ import Alert from '@mui/material/Alert';
 import _ from 'lodash';
 
 import DataGrid from './DataGrid/DataGridSettings';
-import BarChart from './ApexChart/ApexChartSettings';
+import ApexChartSettings from './ApexChart/ApexChartSettings';
 
 const components = {
     DataGrid,
-    BarChart
+    ApexChartSettings
 };
 
 const Settings = ({ onChange, data, settings = { component: 'DataGrid' } }) => {

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import SettingsEdit from 'editor-components/dashboard/DashboardEditor/SettingsEdit';
 
 function DashboardEdit() {
-    const defaultSettings = { component: 'BarChart' };
+    const defaultSettings = { component: 'ApexChartSettings' };
     const [data, setData] = useState([
         {
             id: 1,

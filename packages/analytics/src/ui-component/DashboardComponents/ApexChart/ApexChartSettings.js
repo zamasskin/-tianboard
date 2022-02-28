@@ -13,10 +13,9 @@ import createStorage from './storage';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
 // import { useState } from 'react';
 
-const BarChartSettings = ({ data, settings, onChange }) => {
-    const settingsName = getSettingsName('BarChart');
+const ApexChartSettings = ({ data, settings, onChange }) => {
+    const settingsName = getSettingsName('ApexChartSettings');
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
-    console.log(jsonSettings);
     const storage = createStorage(jsonSettings);
     const keys = _.chain(data).head().keys().value();
     let timeout;
@@ -174,10 +173,10 @@ const BarChartSettings = ({ data, settings, onChange }) => {
     );
 };
 
-BarChartSettings.propTypes = {
+ApexChartSettings.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     settings: PropTypes.object,
     onChange: PropTypes.func
 };
 
-export default BarChartSettings;
+export default ApexChartSettings;
