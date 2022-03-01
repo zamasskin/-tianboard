@@ -7,15 +7,14 @@ import _ from 'lodash';
 import DataGrid from './DataGrid';
 import dataGridConfig from './DataGrid/config';
 import ApexChart from './ApexChart';
-import MainCode from './MainCode';
+
 import barChartConfig from './ApexChart/config';
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
 import EmptyDashboard from './empty';
 
 export const components = {
     DataGrid,
-    ApexChart,
-    MainCode
+    ApexChart
 };
 
 export const defaultConfig = {

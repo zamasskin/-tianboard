@@ -4,12 +4,10 @@ import _ from 'lodash';
 
 import DataGrid from './DataGrid/DataGridSettings';
 import ApexChart from './ApexChart/ApexChartSettings';
-import MainCode from './MainCode/MainCodeSettings';
 
 const components = {
     DataGrid,
-    ApexChart,
-    MainCode
+    ApexChart
 };
 
 const Settings = ({ onChange, data, settings = { component: 'DataGrid' } }) => {
@@ -34,7 +32,7 @@ const Settings = ({ onChange, data, settings = { component: 'DataGrid' } }) => {
         return <SelectComponent data={data} settings={settings} onChange={onChange} />;
     } catch (err) {
         console.error(err);
-        return <Alert severity="warning">{err.message}</Alert>;
+        return <Alert severity="error">{err.message}</Alert>;
     }
 };
 

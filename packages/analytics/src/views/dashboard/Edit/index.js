@@ -9,7 +9,7 @@ import { useState } from 'react';
 import SettingsEdit from 'editor-components/dashboard/DashboardEditor/SettingsEdit';
 
 function DashboardEdit() {
-    const defaultSettings = { component: 'MainCode' };
+    const defaultSettings = { component: 'DataGrid' };
     const [data, setData] = useState([
         {
             id: 1,
