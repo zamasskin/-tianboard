@@ -50,9 +50,13 @@ const Dashboard = ({ onChange, data, settings = { component: 'DataGrid' }, edit 
         return <Alert severity="warning">Компонент не найден</Alert>;
     }
 
-    const componentName = _.has(components, component) ? component : 'DataGrid';
-    const SelectComponent = components[componentName];
-    return <SelectComponent data={data} settings={settings} onChange={onChange} edit={edit} />;
+    try {
+        const componentName = _.has(components, component) ? component : 'DataGrid';
+        const SelectComponent = components[componentName];
+        return <SelectComponent data={data} settings={settings} onChange={onChange} edit={edit} />;
+    } catch (err) {
+        return <Alert severity="error">{err.message}</Alert>;
+    }
 };
 
 Dashboard.propTypes = {
