@@ -14,7 +14,7 @@ import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/con
 // import { useState } from 'react';
 
 const ApexChartSettings = ({ data, settings, onChange }) => {
-    const settingsName = getSettingsName('ApexChartSettings');
+    const settingsName = getSettingsName('ApexChart');
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
     const storage = createStorage(jsonSettings);
     const keys = _.chain(data).head().keys().value();

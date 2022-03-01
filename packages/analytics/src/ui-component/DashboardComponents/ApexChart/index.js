@@ -11,7 +11,7 @@ import Chart from './Chart';
 import createStorage from './storage';
 
 const ApexChart = ({ data, settings }) => {
-    const settingsName = getSettingsName('ApexChartSettings');
+    const settingsName = getSettingsName('ApexChart');
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
     const storage = createStorage(jsonSettings);
     const { series = {}, options = {}, type = 'bar', error } = storage.$values(data);
