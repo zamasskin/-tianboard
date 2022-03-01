@@ -27,10 +27,15 @@ const Settings = ({ onChange, data, settings = { component: 'DataGrid' } }) => {
         return <Alert severity="warning">Компонент не найден</Alert>;
     }
 
-    const componentName = _.has(components, component) ? component : 'DataGrid';
-    const SelectComponent = components[componentName];
+    try {
+        const componentName = _.has(components, component) ? component : 'DataGrid';
+        const SelectComponent = components[componentName];
 
-    return <SelectComponent data={data} settings={settings} onChange={onChange} />;
+        return <SelectComponent data={data} settings={settings} onChange={onChange} />;
+    } catch (err) {
+        console.error(err);
+        return <Alert severity="warning">{err.message}</Alert>;
+    }
 };
 
 Settings.propTypes = {
