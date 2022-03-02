@@ -31,7 +31,6 @@ const ApexChartSettings = ({ data, settings, onChange }) => {
 
     const exampleCode = `$ \${val} thousands`;
 
-    console.log(storage.$getSettingValues('options.chart.type'));
     return (
         <Grid container>
             <Grid item xs={12} />

@@ -1,16 +1,12 @@
 import _ from 'lodash';
 import { Grid, IconButton } from '@mui/material';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import Alert from '@mui/material/Alert';
+
 import PropTypes from 'prop-types';
 
-import { getSettingsRows, getUpdateSettings, getSelection, getCodeWhenSelected, getSettings } from './helpers';
-import { useState } from 'react';
-
 import { getSettingsName } from 'editor-components/dashboard/DashboardEditor/constant';
-import { defaultConfig } from './config';
 
 export const defWidth = 120;
 export const defAlign = 'left';
@@ -116,8 +112,6 @@ const DataGridSettings = ({ data, settings: componentSettings, onChange }) => {
             onChange({ ...settings, columnsSettings: newColumnsSettings });
         }
     };
-
-    // console.log(rows, _.orderBy(rows, ['sort']));
 
     return (
         <Grid container>

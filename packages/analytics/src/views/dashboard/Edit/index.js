@@ -51,14 +51,6 @@ function DashboardEdit() {
         setData(data);
     };
 
-    let timeout = false;
-    const onChangeSettings = (settings) => {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(() => setSettings(settings), 1000);
-    };
-
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
@@ -76,7 +68,7 @@ function DashboardEdit() {
                         <Dashboard data={data} settings={settings} edit onChange={(settings) => setSettings(settings)} />
                     </Grid>
 
-                    <SettingsEdit data={data} settings={settings} onChange={onChangeSettings} />
+                    <SettingsEdit data={data} settings={settings} onChange={(settings) => setSettings(settings)} />
                 </>
             )}
         </Grid>

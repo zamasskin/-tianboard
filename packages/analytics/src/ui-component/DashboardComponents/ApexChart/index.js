@@ -15,7 +15,7 @@ const ApexChart = ({ data, settings }) => {
     const jsonSettings = _.has(settings, settingsName) ? settings[settingsName] : {};
     const storage = createStorage(jsonSettings);
     const { series = {}, options = {}, type = 'bar', error } = storage.$values(data);
-    console.log(series);
+
     return (
         <MainCard>
             <Chart options={options} series={_.values(series)} type={type} />
