@@ -1,7 +1,7 @@
 import { Grid, Box, Tabs, Tab, Typography, Stack } from '@mui/material';
 import React from 'react';
 
-import DefaultForm from './DefaultForm';
+import Form1 from './Form1';
 
 function a11yProps(index) {
     return {
@@ -11,11 +11,11 @@ function a11yProps(index) {
 }
 
 const dataBases = [
-    { label: 'Sqlite', id: 'Sqlite', title: 'Подключение к sqlite', component: <DefaultForm connectionType="sqlite" /> },
+    { label: 'Sqlite', id: 'Sqlite', title: 'Подключение к sqlite', component: <Form1 connectionType="sqlite" /> },
     { label: 'Mariadb', id: 'Mariadb', title: 'Подключение к Mariadb', component: <div>Mariadb</div> },
     { label: 'MySql', id: 'MySql', title: 'Подключение к MySql', component: <div>MySql</div> },
     { label: 'Postgresql', id: 'Postgresql', title: 'Подключение к Postgresql', component: <div>Postgresql</div> },
-    { label: 'Mongodb', id: 'Mongodb', title: 'Подключение к Mongodb', component: <div>MariaMongodbdb</div> }
+    { label: 'Mongodb', id: 'Mongodb', title: 'Подключение к Mongodb', component: <div>Mongodbdb</div> }
 ];
 
 function TabPanel(props) {

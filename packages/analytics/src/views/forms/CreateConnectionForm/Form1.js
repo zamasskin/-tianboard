@@ -8,7 +8,7 @@ import { Formik } from 'formik';
 import { string } from 'helpers/dashboar/edit';
 import Error from 'views/forms/validation/Error';
 
-function DefaultForm({ connectionType }) {
+function Form1({ connectionType }) {
     const theme = useTheme();
     const initValues = {
         name: ''
@@ -56,8 +56,8 @@ function DefaultForm({ connectionType }) {
     );
 }
 
-DefaultForm.propTypes = {
+Form1.propTypes = {
     connectionType: PropTypes.string
 };
 
-export default DefaultForm;
+export default Form1;
