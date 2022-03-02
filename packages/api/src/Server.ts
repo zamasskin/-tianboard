@@ -1,5 +1,6 @@
 import { Configuration, Inject } from "@tsed/di";
 import { PlatformApplication } from "@tsed/common";
+import { MikroOrmModule } from "@tsed/mikro-orm";
 import "@tsed/platform-express"; // /!\ keep this import
 import bodyParser from "body-parser";
 import compress from "compression";
@@ -11,6 +12,18 @@ import { config, rootDir } from "./config";
 
 @Configuration({
   ...config,
+  imports: [MikroOrmModule],
+  mikroOrm: [
+    // {
+    //   contextName: "default",
+    //   type: "sqlite",
+    //   entities: [rootDir + "/entities/default/*{.ts,.js}"],
+    //   clientUrl: `sqlite:/${rootDir}/data/dev.db`,
+    //   discovery: {
+    //     warnWhenNoEntities: false,
+    //   },
+    // },
+  ],
   acceptMimes: ["application/json"],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
