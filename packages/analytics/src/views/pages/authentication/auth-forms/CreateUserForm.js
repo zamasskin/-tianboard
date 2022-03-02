@@ -4,10 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import * as yup from 'yup';
 import {
     Grid,
-    Stack,
     Typography,
     useMediaQuery,
-    TextField,
     FormControl,
     InputLabel,
     OutlinedInput,
@@ -26,17 +24,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-const Error = ({ error, touched }) => {
-    if (error && touched) {
-        return (
-            <FormHelperText error id="standard-weight-helper-text--register">
-                {error}
-            </FormHelperText>
-        );
-    }
-    return false;
-};
+import Error from 'views/forms/validation/Error';
 
 const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
     const theme = useTheme();

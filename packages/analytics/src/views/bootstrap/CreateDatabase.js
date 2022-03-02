@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Grid, Box, Typography, Stack } from '@mui/material';
 
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
+import CreateConnectionForm from 'views/forms/CreateConnectionForm';
 
 function CreateDatabase() {
     return (
@@ -21,7 +22,20 @@ function CreateDatabase() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Grid container alignItems="center" justifyContent="center">
-                                            <Grid item>123</Grid>
+                                            <Grid item>
+                                                <Stack alignItems="center" justifyContent="center" spacing={1}>
+                                                    <Typography variant="h3">Настройка подключения</Typography>
+                                                </Stack>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid container alignItems="center" justifyContent="center">
+                                            <Grid item xs={12}>
+                                                <Box>
+                                                    <CreateConnectionForm />
+                                                </Box>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
