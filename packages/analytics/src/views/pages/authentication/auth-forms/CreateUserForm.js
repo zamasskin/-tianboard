@@ -41,7 +41,7 @@ const Error = ({ error, touched }) => {
 const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const [confirmPassword, setConfirmPassword] = useState('');
+
     const [showPassword, setShowPassword] = useState(false);
 
     const initValues = {
@@ -138,7 +138,7 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
                         <FormControl
                             fullWidth
                             sx={{ ...theme.typography.customInput }}
-                            error={Boolean(touched.secondName && errors.secondName)}
+                            error={Boolean(touched.password && errors.password)}
                         >
                             <InputLabel htmlFor="outlined-adornment-password-register">Пароль</InputLabel>
                             <OutlinedInput
