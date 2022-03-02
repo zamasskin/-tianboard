@@ -8,7 +8,7 @@ import { Formik } from 'formik';
 import { string } from 'helpers/dashboar/edit';
 import Error from 'views/forms/validation/Error';
 
-function Form1({ connectionType }) {
+function FromConnection1({ connectionType }) {
     const theme = useTheme();
     const initValues = {
         name: ''
@@ -21,6 +21,7 @@ function Form1({ connectionType }) {
         <Formik validationSchema={validationSchema} initialValues={initValues}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
+                    <input type="hidden" name="connectionType" value={connectionType} />
                     <FormControl fullWidth error={Boolean(touched.name && errors.name)} sx={{ ...theme.typography.customInput }}>
                         <InputLabel htmlFor="outlined-adornment-email-register" name="name">
                             Название
@@ -56,8 +57,8 @@ function Form1({ connectionType }) {
     );
 }
 
-Form1.propTypes = {
+FromConnection1.propTypes = {
     connectionType: PropTypes.string
 };
 
-export default Form1;
+export default FromConnection1;
