@@ -20,12 +20,14 @@ function FromConnection2({ connectionType, defaultPort }) {
         name: '',
         port: '',
         host: '',
+        user: '',
         password: ''
     };
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('требуется название'),
         host: Yup.string().required('требуется хост'),
         password: Yup.string().required('требуется пароль'),
+        user: Yup.string().required('требуется имя пользователя'),
         port: Yup.number()
             .typeError('должно быть числом')
             .required('требуется порт')
@@ -41,11 +43,17 @@ function FromConnection2({ connectionType, defaultPort }) {
         event.preventDefault();
     };
 
+    const handleSubmit = (val) => {
+        console.log(val);
+        return true;
+    };
+
     return (
-        <Formik validationSchema={validationSchema} initialValues={initValues}>
+        <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={handleSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
                     <input type="hidden" name="connectionType" value={connectionType} />
+                    <input type="hidden" name="formType" value="name" />
                     <FormControl fullWidth error={Boolean(touched.name && errors.name)} sx={{ ...theme.typography.customInput }}>
                         <InputLabel htmlFor="outlined-adornment-email-register" name="name">
                             Название
@@ -84,7 +92,7 @@ function FromConnection2({ connectionType, defaultPort }) {
                                 <OutlinedInput
                                     placeholder={defaultPort}
                                     type="text"
-                                    value={values.secondName}
+                                    value={values.port}
                                     name="port"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -94,6 +102,19 @@ function FromConnection2({ connectionType, defaultPort }) {
                             </FormControl>
                         </Grid>
                     </Grid>
+                    <FormControl fullWidth error={Boolean(touched.user && errors.user)} sx={{ ...theme.typography.customInput }}>
+                        <InputLabel htmlFor="outlined-adornment-email-register">Имя пользователя</InputLabel>
+                        <OutlinedInput
+                            placeholder="root"
+                            type="text"
+                            value={values.user}
+                            name="user"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                        />
+                        <Error error={errors.user} touched={touched.user} />
+                    </FormControl>
                     <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
                         <InputLabel htmlFor="outlined-adornment-email-register" name="name">
                             Пароль

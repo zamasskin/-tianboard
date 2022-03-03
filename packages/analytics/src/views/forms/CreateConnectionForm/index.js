@@ -34,7 +34,7 @@ function TabPanelChild(props) {
     );
 }
 
-function PostgresqlForm() {
+function PostgresqlForm(props) {
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -49,12 +49,13 @@ function PostgresqlForm() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <FromConnection2 connectionType="Postgresql" defaultPort="5432" />
+                <FromConnection2 connectionType="postgresql" defaultPort="5432" {...props} />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <FromConnection3
-                    connectionType="Postgresql"
+                    connectionType="postgresql"
                     placeholder="postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]"
+                    {...props}
                 />
             </TabPanel>
         </div>
@@ -62,25 +63,35 @@ function PostgresqlForm() {
 }
 
 const dataBases = [
-    { label: 'Sqlite', id: 'Sqlite', title: 'Подключение к sqlite', component: <FromConnection1 connectionType="sqlite" /> },
+    {
+        label: 'Sqlite',
+        id: 'Sqlite',
+        title: 'Подключение к sqlite',
+        component: (props) => <FromConnection1 connectionType="sqlite" {...props} />
+    },
     {
         label: 'Mariadb',
         id: 'Mariadb',
         title: 'Подключение к Mariadb',
-        component: <FromConnection2 connectionType="Mariadb" defaultPort="3306" />
+        component: (props) => <FromConnection2 connectionType="mariadb" defaultPort="3306" {...props} />
     },
-    { label: 'MySql', id: 'MySql', title: 'Подключение к MySql', component: <FromConnection2 connectionType="MySql" defaultPort="3306" /> },
+    {
+        label: 'MySql',
+        id: 'MySql',
+        title: 'Подключение к MySql',
+        component: (props) => <FromConnection2 connectionType="mysql" defaultPort="3306" {...props} />
+    },
     {
         label: 'Postgresql',
         id: 'Postgresql',
         title: 'Подключение к Postgresql',
-        component: <PostgresqlForm />
+        component: (props) => <PostgresqlForm {...props} />
     },
     {
         label: 'Mongodb',
         id: 'Mongodb',
         title: 'Подключение к Mongodb',
-        component: <FromConnection3 connectionType="Mongodb" placeholder="mongodb://localhost:27017/admin" />
+        component: (props) => <FromConnection3 connectionType="mongo" placeholder="mongodb://localhost:27017/admin" {...props} />
     }
 ];
 
@@ -107,8 +118,8 @@ function TabPanel(props) {
     );
 }
 
-const CreateConnectionForm = () => {
-    const [value, setValue] = React.useState(3);
+const CreateConnectionForm = ({ onSuccess }) => {
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -126,7 +137,7 @@ const CreateConnectionForm = () => {
                     </Box>
                     {dataBases.map((db, i) => (
                         <TabPanel key={i} value={value} index={i} title={db.title}>
-                            {db.component}
+                            {React.createElement(db.component, { onSuccess })}
                         </TabPanel>
                     ))}
                 </Box>
