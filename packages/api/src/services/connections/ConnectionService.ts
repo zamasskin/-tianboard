@@ -127,7 +127,7 @@ export class ConnectionService {
       dictionaries: [adjectives, colors, animals],
     });
     const fileName = `${randomName}.db`;
-    const filePath = `sqlite://../data/` + fileName;
+    const filePath = `file://./` + fileName;
     return this.saveConnections({
       clientUrl: filePath,
       ...config,
@@ -149,13 +149,13 @@ export class ConnectionService {
       {
         ...config,
         contextName,
-        entities: [`./entities/${contextName}/**/*.ts`],
-        discovery: { warnWhenNoEntities: false },
-        // ...(connections.length > 0
-        //   ? { discovery: { warnWhenNoEntities: false } }
-        //   : {}),
+        entities: [`./src/entities/${contextName}/*.ts`],
+        ...(connections.length > 0
+          ? { discovery: { warnWhenNoEntities: false } }
+          : {}),
       },
     ];
+
     const updateConfig = _.merge(getConfigurations(), {
       connections: updateConnections,
     });
