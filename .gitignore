@@ -36,3 +36,4 @@ coverage
 
 
 /packages/*/src/config/databases/configurations.json
+/packages/*/*.db
