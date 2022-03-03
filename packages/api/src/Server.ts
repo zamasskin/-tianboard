@@ -9,21 +9,12 @@ import methodOverride from "method-override";
 import cors from "cors";
 import "@tsed/ajv";
 import { config, rootDir } from "./config";
+import { getConnections } from "./config/databases";
 
 @Configuration({
   ...config,
   imports: [MikroOrmModule],
-  mikroOrm: [
-    // {
-    //   contextName: "default",
-    //   type: "sqlite",
-    //   entities: [rootDir + "/entities/default/*{.ts,.js}"],
-    //   clientUrl: `sqlite:/${rootDir}/data/dev.db`,
-    //   discovery: {
-    //     warnWhenNoEntities: false,
-    //   },
-    // },
-  ],
+  mikroOrm: getConnections(),
   acceptMimes: ["application/json"],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE

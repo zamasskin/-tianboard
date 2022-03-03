@@ -9,11 +9,18 @@ export function getConnections() {
     return [];
   }
 
-  return _.chain(connections)
-    .map((config) => {
-      return config;
-    })
-    .value();
+  return connections.map((connection) => _.omit(connection, "connectionName"));
+}
+
+export function getConnectionList() {
+  const connections = _.get(configurations, "connections");
+  if (!_.isArray(connections)) {
+    return [];
+  }
+
+  return connections.map((connection) =>
+    _.pick(connection, ["connectionName", "type", "contextName"])
+  );
 }
 
 export function getConfigurations() {

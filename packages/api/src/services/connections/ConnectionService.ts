@@ -32,6 +32,7 @@ import {
   getConfigurations,
   configPath,
 } from "src/config/databases";
+import { rootDir } from "src/config";
 
 // При подключении новых провайдеров типы заводятся тут(например для провайдера mongoDb)
 type provider = Knex;
@@ -126,7 +127,7 @@ export class ConnectionService {
       dictionaries: [adjectives, colors, animals],
     });
     const fileName = `${randomName}.db`;
-    const filePath = path.join("../data/", fileName);
+    const filePath = `sqlite://../data/` + fileName;
     return this.saveConnections({
       clientUrl: filePath,
       ...config,
@@ -138,10 +139,23 @@ export class ConnectionService {
   }
 
   async saveConnections(config: ConnectionsModel | ConnectionsModelByUrl) {
+    const randomName: string = uniqueNamesGenerator({
+      dictionaries: [adjectives, colors, animals],
+    });
     const connections = getConnections();
-    console.log(connections);
-    const id = connections.length === 0 ? "default" : uuidv4();
-    const updateConnections = [...connections, { ...config, id }];
+    const contextName = connections.length === 0 ? "default" : randomName;
+    const updateConnections = [
+      ...connections,
+      {
+        ...config,
+        contextName,
+        entities: [`./entities/${contextName}/**/*.ts`],
+        discovery: { warnWhenNoEntities: false },
+        // ...(connections.length > 0
+        //   ? { discovery: { warnWhenNoEntities: false } }
+        //   : {}),
+      },
+    ];
     const updateConfig = _.merge(getConfigurations(), {
       connections: updateConnections,
     });
