@@ -54,3 +54,4 @@ test/**/*.js.map
 
 
 src/config/databases/configurations.json
+/*.db
