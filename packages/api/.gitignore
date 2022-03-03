@@ -53,4 +53,4 @@ test/**/*.js.map
 /dist
 
 
-/config/databases/configurations.json
+src/config/databases/configurations.json

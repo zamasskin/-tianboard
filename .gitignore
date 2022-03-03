@@ -35,4 +35,4 @@ pids
 coverage
 
 
-/packages/*/config/databases/configurations.json
+/packages/*/src/config/databases/configurations.json
