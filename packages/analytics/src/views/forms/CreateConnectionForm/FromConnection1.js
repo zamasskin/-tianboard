@@ -12,10 +12,10 @@ function FromConnection1({ connectionType, ...props }) {
     console.log(props);
     const theme = useTheme();
     const initValues = {
-        name: ''
+        connectionName: ''
     };
     const validationSchema = Yup.object().shape({
-        name: Yup.string().required('требуется название')
+        connectionName: Yup.string().required('требуется название')
     });
 
     const tm = (ms) => new Promise((ok) => setTimeout(ok, ms));
@@ -30,21 +30,24 @@ function FromConnection1({ connectionType, ...props }) {
         <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={handleSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
-                    <input type="hidden" name="connectionType" value={connectionType} />
-                    <input type="hidden" name="formType" value="name" />
-                    <FormControl fullWidth error={Boolean(touched.name && errors.name)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-register" name="name">
+                    <input type="hidden" name="type" value={connectionType} />
+                    <FormControl
+                        fullWidth
+                        error={Boolean(touched.connectionName && errors.connectionName)}
+                        sx={{ ...theme.typography.customInput }}
+                    >
+                        <InputLabel htmlFor="outlined-adornment-email-register" name="connectionName">
                             Название
                         </InputLabel>
                         <OutlinedInput
                             type="text"
-                            value={values.name}
-                            name="name"
+                            value={values.connectionName}
+                            name="connectionName"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             inputProps={{}}
                         />
-                        <Error error={errors.name} touched={touched.name} />
+                        <Error error={errors.connectionName} touched={touched.connectionName} />
                     </FormControl>
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>

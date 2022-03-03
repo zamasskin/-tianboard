@@ -52,22 +52,25 @@ function FromConnection2({ connectionType, defaultPort }) {
         <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={handleSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
-                    <input type="hidden" name="connectionType" value={connectionType} />
-                    <input type="hidden" name="formType" value="name" />
-                    <FormControl fullWidth error={Boolean(touched.name && errors.name)} sx={{ ...theme.typography.customInput }}>
-                        <InputLabel htmlFor="outlined-adornment-email-register" name="name">
+                    <input type="hidden" name="type" value={connectionType} />
+                    <FormControl
+                        fullWidth
+                        error={Boolean(touched.connectionName && errors.connectionName)}
+                        sx={{ ...theme.typography.customInput }}
+                    >
+                        <InputLabel htmlFor="outlined-adornment-email-register" name="connectionName">
                             Название
                         </InputLabel>
                         <OutlinedInput
                             label="Название"
                             type="text"
-                            value={values.name}
+                            value={values.connectionName}
                             name="name"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             inputProps={{}}
                         />
-                        <Error error={errors.name} touched={touched.name} />
+                        <Error error={errors.connectionName} touched={touched.connectionName} />
                     </FormControl>
                     <Grid container spacing={matchDownSM ? 0 : 2}>
                         <Grid item xs={12} sm={8}>

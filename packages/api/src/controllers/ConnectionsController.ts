@@ -5,6 +5,11 @@ import {
   ConnectionCreateParams,
   ConnectionApplyParams,
 } from "src/interfaces/ConnectionParams";
+import {
+  ConnectionsModel,
+  ConnectionsModelByFile,
+  ConnectionsModelByUrl,
+} from "src/models/ConnectionsModel";
 import { ConnectionService } from "src/services/connections/ConnectionService";
 
 @Controller("/connections")
@@ -19,8 +24,22 @@ export class ConnectionController {
   }
 
   @Post("/create")
-  create(@BodyParams() config: ConnectionCreateParams) {
+  create(@BodyParams(ConnectionsModel) config: ConnectionsModel) {
     return this.connectionService.create(config);
+  }
+
+  @Post("/create/by-file")
+  createByFile(
+    @BodyParams(ConnectionsModelByFile) config: ConnectionsModelByFile
+  ) {
+    return this.connectionService.createByFile(config);
+  }
+
+  @Post("/create/by-url")
+  createByUrl(
+    @BodyParams(ConnectionsModelByUrl) config: ConnectionsModelByUrl
+  ) {
+    return this.connectionService.createByUrl(config);
   }
 
   @Post("/:id")

@@ -33,3 +33,6 @@ pids
 
 # testing
 coverage
+
+
+/packages/*/config/databases/configurations.json

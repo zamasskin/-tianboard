@@ -1,5 +1,15 @@
+import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs-extra";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
+import path from "path";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
 import { Knex } from "knex";
 
 import {
@@ -12,7 +22,16 @@ import { ConnectionsRepository } from "./ConnectionsRepository";
 import KnexConnection, {
   PROVIDERS,
 } from "../../libs/connections/KnexConnection";
-// import { ConnectionApplyModel } from "src/models/ConnectionApplyModel";
+import {
+  ConnectionsModel,
+  ConnectionsModelByFile,
+  ConnectionsModelByUrl,
+} from "src/models/ConnectionsModel";
+import {
+  getConnections,
+  getConfigurations,
+  configPath,
+} from "src/config/databases";
 
 // При подключении новых провайдеров типы заводятся тут(например для провайдера mongoDb)
 type provider = Knex;
@@ -98,19 +117,36 @@ export class ConnectionService {
   }
 
   // Создание нового подключения
-  create(config: ConnectionCreateParams) {
-    if (!config.name) {
-      throw new Error("name field is empty");
-    }
-    let connectionUrl = this.getConnectionUrlByParams(config);
-    return this.connectionService.create({
-      select: this.connectionSects,
-      data: {
-        name: config.name,
-        provider: config.provider,
-        connectionUrl,
-      },
+  create(config: ConnectionsModel) {
+    return this.saveConnections(config);
+  }
+
+  createByFile(config: ConnectionsModelByFile) {
+    const randomName: string = uniqueNamesGenerator({
+      dictionaries: [adjectives, colors, animals],
     });
+    const fileName = `${randomName}.db`;
+    const filePath = path.join("../data/", fileName);
+    return this.saveConnections({
+      clientUrl: filePath,
+      ...config,
+    });
+  }
+
+  createByUrl(config: ConnectionsModelByUrl) {
+    return this.saveConnections(config);
+  }
+
+  async saveConnections(config: ConnectionsModel | ConnectionsModelByUrl) {
+    const connections = getConnections();
+    console.log(connections);
+    const id = connections.length === 0 ? "default" : uuidv4();
+    const updateConnections = [...connections, { ...config, id }];
+    const updateConfig = _.merge(getConfigurations(), {
+      connections: updateConnections,
+    });
+    const result = await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
+    return { result: true };
   }
 
   // Изменение текущего подключения по ид
