@@ -3,7 +3,7 @@ import config from 'config';
 import { getJson, fetchPostJson } from './fetch';
 
 export async function getConnections() {
-    const result = await getJson(`${config.apiUrl}/connections`);
+    const result = await getJson('/connections');
     if (result.errors) {
         throw result.message;
     }
@@ -16,8 +16,7 @@ export async function getConnectionOptions() {
 }
 
 export async function apply(connectionId, query, params) {
-    const url = util.format('%s/connections/%s', config.apiUrl, connectionId);
-    const result = await fetchPostJson(url, { query, params });
+    const result = await fetchPostJson(`/connections/${connectionId}`, { query, params });
 
     if (result.errors) {
         throw result.message;

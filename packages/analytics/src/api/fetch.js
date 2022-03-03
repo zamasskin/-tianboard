@@ -1,5 +1,7 @@
+import config from 'config';
+
 async function fetchJson(url, json, method = 'GET') {
-    const rawResponse = await fetch(url, {
+    const rawResponse = await fetch(config.apiUrl + url, {
         method,
         headers: {
             Accept: 'application/json',
@@ -11,7 +13,7 @@ async function fetchJson(url, json, method = 'GET') {
 }
 
 export async function fetchPostJson(url, json) {
-    const rawResponse = await fetch(url, {
+    const rawResponse = await fetch(config.apiUrl + url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -23,7 +25,8 @@ export async function fetchPostJson(url, json) {
 }
 
 export async function getJson(url) {
-    const rawResponse = await fetch(url);
+    console.log(`${config.apiUrl}/${url}`);
+    const rawResponse = await fetch(config.apiUrl + url);
     return rawResponse.json();
 }
 

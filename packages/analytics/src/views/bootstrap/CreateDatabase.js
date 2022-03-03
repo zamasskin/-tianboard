@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Grid, Box, Typography, Stack } from '@mui/material';
 
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
@@ -7,6 +7,12 @@ import Logo from 'ui-component/Logo';
 import CreateConnectionForm from 'views/forms/CreateConnectionForm';
 
 function CreateDatabase() {
+    const navigate = useNavigate();
+    // console.log(useHistory);
+    const onSuccess = () => {
+        navigate('/bootstrap/user');
+    };
+
     return (
         <AuthWrapper1>
             <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
@@ -33,7 +39,7 @@ function CreateDatabase() {
                                         <Grid container alignItems="center" justifyContent="center">
                                             <Grid item xs={12}>
                                                 <Box>
-                                                    <CreateConnectionForm />
+                                                    <CreateConnectionForm onSuccess={onSuccess} />
                                                 </Box>
                                             </Grid>
                                         </Grid>
