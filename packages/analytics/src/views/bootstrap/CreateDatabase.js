@@ -4,7 +4,7 @@ import { Grid, Box, Typography, Stack } from '@mui/material';
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
-import CreateConnectionForm from 'views/forms/CreateConnectionForm';
+import CreateConnectionForm from 'ui-component/forms/CreateConnectionForm';
 
 function CreateDatabase() {
     const navigate = useNavigate();

@@ -1,30 +1,33 @@
-import _ from 'lodash';
 import { useState } from 'react';
 import { FormControl, InputLabel, OutlinedInput, Button, Box, Alert } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import _ from 'lodash';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import ErrorComponent from 'views/forms/validation/Error';
+import { Formik } from 'formik';
+import { string } from 'helpers/dashboar/edit';
+import ErrorComponent from 'ui-component/forms/validation/Error';
 import { fetchPostJson } from 'api/fetch';
 
-function FromConnection1({ connectionType, onSuccess }) {
+function FromConnection3({ connectionType, placeholder, onSuccess }) {
     const [error, setError] = useState(false);
     const theme = useTheme();
     const initValues = {
         connectionName: '',
+        clientUrl: '',
         type: connectionType
     };
     const validationSchema = Yup.object().shape({
-        connectionName: Yup.string().required('требуется название')
+        connectionName: Yup.string().required('требуется название'),
+        clientUrl: Yup.string().required('требуется URL')
     });
 
     const handleSubmit = async (value) => {
         setError(false);
         try {
-            const result = await fetchPostJson('/connections/create/by-file', value);
+            const result = await fetchPostJson('/connections/create/by-url', value);
             if (_.has(result, 'errors') && _.has(result, 'message')) {
                 throw new Error(_.get(result, 'message'));
             }
@@ -49,6 +52,8 @@ function FromConnection1({ connectionType, onSuccess }) {
                             Название
                         </InputLabel>
                         <OutlinedInput
+                            placeholder={placeholder}
+                            label="Название"
                             type="text"
                             value={values.connectionName}
                             name="connectionName"
@@ -57,6 +62,22 @@ function FromConnection1({ connectionType, onSuccess }) {
                             inputProps={{}}
                         />
                         <ErrorComponent error={errors.connectionName} touched={touched.connectionName} />
+                    </FormControl>
+                    <FormControl fullWidth error={Boolean(touched.clientUrl && errors.clientUrl)} sx={{ ...theme.typography.customInput }}>
+                        <InputLabel htmlFor="outlined-adornment-email-register" name="clientUrl">
+                            URL
+                        </InputLabel>
+                        <OutlinedInput
+                            placeholder={placeholder}
+                            label="URL"
+                            type="text"
+                            value={values.clientUrl}
+                            name="clientUrl"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                        />
+                        <ErrorComponent error={errors.clientUrl} touched={touched.clientUrl} />
                     </FormControl>
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
@@ -84,8 +105,9 @@ function FromConnection1({ connectionType, onSuccess }) {
     );
 }
 
-FromConnection1.propTypes = {
-    connectionType: PropTypes.string
+FromConnection3.propTypes = {
+    connectionType: PropTypes.string,
+    placeholder: PropTypes.string
 };
 
-export default FromConnection1;
+export default FromConnection3;

@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Formik } from 'formik';
-import Error from 'views/forms/validation/Error';
+import Error from 'ui-component/forms/validation/Error';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';

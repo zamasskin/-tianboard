@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
-import CreateUserForm from 'views/pages/authentication/auth-forms/CreateUserForm';
+import CreateUserForm from 'ui-component/forms/Account/CreateUserForm';
 
 const CreateUser = () => (
     <AuthWrapper1>

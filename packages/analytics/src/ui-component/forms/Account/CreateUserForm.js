@@ -24,7 +24,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
-import Error from 'views/forms/validation/Error';
+import Error from 'ui-component/forms/validation/Error';
 
 const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
     const theme = useTheme();
