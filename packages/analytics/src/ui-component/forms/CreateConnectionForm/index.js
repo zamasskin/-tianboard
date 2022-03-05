@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Box, Tabs, Tab, Typography, Stack } from '@mui/material';
+import PropTypes from 'prop-types';
 
 import FromConnection1 from './FromConnection1';
 import FromConnection2 from './FromConnection2';
@@ -17,21 +18,6 @@ function a12yProps(index) {
         id: `simple-child-tab-${index}`,
         'aria-controls': `simple-child-tabpanel-${index}`
     };
-}
-
-function TabPanelChild(props) {
-    const { children, value, index, ...other } = props;
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-child-tabpanel-${index}`}
-            aria-labelledby={`simple-child-tab-${index}`}
-            {...other}
-        >
-            {children}
-        </div>
-    );
 }
 
 function PostgresqlForm(props) {
@@ -118,6 +104,13 @@ function TabPanel(props) {
     );
 }
 
+TabPanel.propTypes = {
+    children: PropTypes.element,
+    value: PropTypes.number,
+    index: PropTypes.number,
+    title: PropTypes.string
+};
+
 const CreateConnectionForm = ({ onSuccess }) => {
     const [value, setValue] = React.useState(0);
 
@@ -144,6 +137,10 @@ const CreateConnectionForm = ({ onSuccess }) => {
             </Grid>
         </Grid>
     );
+};
+
+CreateConnectionForm.propTypes = {
+    onSuccess: PropTypes.func
 };
 
 export default CreateConnectionForm;

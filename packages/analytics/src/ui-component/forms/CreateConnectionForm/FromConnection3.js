@@ -7,7 +7,6 @@ import _ from 'lodash';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Formik } from 'formik';
-import { string } from 'helpers/dashboar/edit';
 import ErrorComponent from 'ui-component/forms/validation/Error';
 import { fetchPostJson } from 'api/fetch';
 
@@ -107,7 +106,8 @@ function FromConnection3({ connectionType, placeholder, onSuccess }) {
 
 FromConnection3.propTypes = {
     connectionType: PropTypes.string,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    onSuccess: PropTypes.func
 };
 
 export default FromConnection3;

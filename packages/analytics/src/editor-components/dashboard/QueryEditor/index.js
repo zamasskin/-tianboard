@@ -11,6 +11,7 @@ import getLanguageByConnector from './configurations/laguages';
 import getDbConnections, { apply } from 'api/connections';
 
 import { gridSpacing } from 'store/constant';
+import _ from 'lodash';
 
 const QueryEditor = ({ onResult }) => {
     const [connections, setConnections] = useState([]);
@@ -18,22 +19,27 @@ const QueryEditor = ({ onResult }) => {
     const [load, setLoad] = useState(false);
     const [code, setCode] = useState('');
     const [tokens] = useState(['id', 'name']);
-    const [connectionId, setConnectionId] = useState('0');
+    const [connectionId, setConnectionId] = useState('default');
     const [lang, setLang] = useState('sql');
 
     useEffect(() => {
         getDbConnections()
-            .then((data) => setConnections(data))
+            .then((data) => {
+                setConnections(data);
+
+                const selectLang = getLanguageByConnector(_.first(data)?.type);
+                setLang(selectLang);
+            })
             .catch((err) => setError(`ERROR: ${err}`));
     }, []);
 
     function setChange(val) {
         setConnectionId(val);
-        if (Number(val) === 0) {
+        if (!val) {
             setLang('sql');
         } else {
-            const connection = connections.find((conn) => Number(conn.id) === Number(val));
-            const lang = getLanguageByConnector(connection.provider);
+            const connection = connections.find((conn) => conn.contextName === val);
+            const lang = getLanguageByConnector(connection.type);
             setLang(lang);
         }
     }
@@ -62,21 +68,22 @@ const QueryEditor = ({ onResult }) => {
                         <Grid item>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Подключение</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={connectionId}
-                                    label="Подключение"
-                                    onChange={(ev) => setChange(ev.target.value)}
-                                >
-                                    <MenuItem value="0">Предустановленая</MenuItem>
-                                    {connections &&
-                                        connections.map((conn) => (
-                                            <MenuItem key={conn.id} value={conn.id}>
-                                                {[conn.name, conn.provider].join(': ')}
-                                            </MenuItem>
-                                        ))}
-                                </Select>
+                                {connections.length && (
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value="default"
+                                        label="Подключение"
+                                        onChange={(ev) => setChange(ev.target.value)}
+                                    >
+                                        {connections &&
+                                            connections.map((conn) => (
+                                                <MenuItem key={conn.contextName} value={conn.contextName}>
+                                                    {[conn.connectionName, conn.type].join(': ')}
+                                                </MenuItem>
+                                            ))}
+                                    </Select>
+                                )}
                             </FormControl>
                         </Grid>
                     </Grid>

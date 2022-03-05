@@ -1,5 +1,3 @@
-import util from 'util';
-import config from 'config';
 import { getJson, fetchPostJson } from './fetch';
 
 export async function getConnections() {
@@ -12,7 +10,7 @@ export async function getConnections() {
 
 export async function getConnectionOptions() {
     const connections = await getConnections();
-    return [{ id: 0, name: 'По умолчанию' }, ...connections.map((conn) => ({ title: [conn.name, conn.provider].join(':'), id: conn.id }))];
+    return connections;
 }
 
 export async function apply(connectionId, query, params) {

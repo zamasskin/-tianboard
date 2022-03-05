@@ -5,7 +5,6 @@ const getChartType = (type) => type;
 
 function createStorage(settings) {
     let stokeColors;
-    let strokeCurve;
     const type = settings?.options?.chart?.type || 'bar';
     if (type === 'bar') {
         stokeColors = arrayOf(settings?.options?.stroke?.colors, ['transparent']);
@@ -16,10 +15,8 @@ function createStorage(settings) {
             stokeColors = arrayOf(settings?.options?.stroke?.colors, ['transparent']);
             break;
         case 'line':
-            strokeCurve = arrayOf(settings?.options?.chart?.type, []);
             break;
         case 'area':
-            strokeCurve = arrayOf(settings?.options?.chart?.type, []);
             break;
         default:
             stokeColors = undefined;

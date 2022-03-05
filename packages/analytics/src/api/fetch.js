@@ -25,7 +25,6 @@ export async function fetchPostJson(url, json) {
 }
 
 export async function getJson(url) {
-    console.log(`${config.apiUrl}/${url}`);
     const rawResponse = await fetch(config.apiUrl + url);
     return rawResponse.json();
 }

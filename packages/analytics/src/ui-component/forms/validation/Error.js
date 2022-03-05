@@ -1,4 +1,5 @@
 import { FormHelperText } from '@mui/material';
+import PropTypes from 'prop-types';
 
 const Error = ({ error, touched }) => {
     if (error && touched) {
@@ -9,6 +10,11 @@ const Error = ({ error, touched }) => {
         );
     }
     return false;
+};
+
+Error.propTypes = {
+    error: PropTypes.string,
+    touched: PropTypes.string
 };
 
 export default Error;

@@ -12,8 +12,7 @@ import {
     InputAdornment,
     IconButton,
     Box,
-    Button,
-    FormHelperText
+    Button
 } from '@mui/material';
 
 import { Formik } from 'formik';

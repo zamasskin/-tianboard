@@ -85,7 +85,8 @@ function FromConnection1({ connectionType, onSuccess }) {
 }
 
 FromConnection1.propTypes = {
-    connectionType: PropTypes.string
+    connectionType: PropTypes.string,
+    onSuccess: PropTypes.func
 };
 
 export default FromConnection1;

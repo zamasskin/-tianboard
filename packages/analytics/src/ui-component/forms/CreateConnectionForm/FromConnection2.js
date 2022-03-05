@@ -187,7 +187,8 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
 
 FromConnection2.propTypes = {
     connectionType: PropTypes.string,
-    defaultPort: PropTypes.string
+    defaultPort: PropTypes.string,
+    onSuccess: PropTypes.func
 };
 
 export default FromConnection2;
