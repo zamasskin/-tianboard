@@ -1,11 +1,6 @@
-import {
-  Collection,
-  Entity,
-  ManyToMany,
-  PrimaryKey,
-  Property,
-} from "@mikro-orm/core";
-import { Group } from "./Group";
+import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core";
+import { AccountModel, UserRole, UserStatus } from "src/models/AccountModel";
+import crypto from "crypto";
 
 @Entity()
 export class User {
@@ -24,6 +19,23 @@ export class User {
   @Property()
   password: string;
 
-  @ManyToMany(() => Group, (group) => group.users)
-  groups = new Collection<Group>(this);
+  @Enum({ items: () => UserRole, array: true, default: [UserRole.User] })
+  roles: UserRole[] = [UserRole.User];
+
+  @Enum({ items: () => UserStatus, array: true, default: UserStatus.Active })
+  status: UserStatus = UserStatus.Active;
+
+  constructor(account?: AccountModel) {
+    if (account) {
+      this.firstName = account.firstName;
+      this.secondName = account.secondName;
+      this.email = account.email;
+      this.password = crypto
+        .createHash("md5")
+        .update(account.password)
+        .digest("hex");
+      this.roles = account.roles;
+      this.status = account.status;
+    }
+  }
 }

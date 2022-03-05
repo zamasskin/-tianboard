@@ -1,15 +1,13 @@
 import { BodyParams, PathParams } from "@tsed/common";
 import { Controller, Inject } from "@tsed/di";
 import { ContentType, Get, Post, Put, Delete } from "@tsed/schema";
-import {
-  ConnectionCreateParams,
-  ConnectionApplyParams,
-} from "src/interfaces/ConnectionParams";
+import { ConnectionCreateParams } from "src/interfaces/ConnectionParams";
 import {
   ConnectionsModel,
   ConnectionsModelByFile,
   ConnectionsModelByUrl,
 } from "src/models/ConnectionsModel";
+import { DatabaseQueryModel } from "src/models/DatabaseQueryModel";
 import { ConnectionService } from "src/services/connections/ConnectionService";
 
 @Controller("/connections")
@@ -42,12 +40,12 @@ export class ConnectionController {
     return this.connectionService.createByUrl(config);
   }
 
-  @Post("/:id")
+  @Post("/:contextName")
   apply(
-    @PathParams("id") id: number,
-    @BodyParams() params: ConnectionApplyParams
+    @PathParams("contextName") contextName: string,
+    @BodyParams(DatabaseQueryModel) params: DatabaseQueryModel
   ) {
-    return this.connectionService.apply(id, params);
+    return this.connectionService.apply(contextName, params);
   }
 
   @Put("/:id")

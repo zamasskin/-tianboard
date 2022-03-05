@@ -1,8 +1,8 @@
 import _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
 import fs from "fs-extra";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
+import { MikroOrmRegistry, Orm } from "@tsed/mikro-orm";
 import path from "path";
 import {
   uniqueNamesGenerator,
@@ -17,11 +17,7 @@ import {
   ConnectionCreateParams,
 } from "src/interfaces/ConnectionParams";
 import { PrismaService } from "../PrismaService";
-import ConnectionAbstract from "src/abstract/ConnectionAbstract";
 import { ConnectionsRepository } from "./ConnectionsRepository";
-import KnexConnection, {
-  PROVIDERS,
-} from "../../libs/connections/KnexConnection";
 import {
   ConnectionsModel,
   ConnectionsModelByFile,
@@ -31,8 +27,10 @@ import {
   getConnections,
   getConfigurations,
   configPath,
+  getConnectionList,
 } from "src/config/databases";
 import { rootDir } from "src/config";
+import { Options, MikroORM } from "@mikro-orm/core";
 
 // При подключении новых провайдеров типы заводятся тут(например для провайдера mongoDb)
 type provider = Knex;
@@ -42,41 +40,25 @@ export class ConnectionService {
   @Inject()
   protected connectionService: ConnectionsRepository;
 
+  @Orm("default")
+  private readonly orm!: MikroORM;
+
   @Inject()
   prisma: PrismaService;
 
   @Constant("env")
   production: boolean;
 
-  // Создание коннектора для запросов
-  connect(
-    provider: string,
-    connectionUrl: string
-  ): ConnectionAbstract<provider> {
-    if (PROVIDERS.includes(provider)) {
-      return new KnexConnection(provider, connectionUrl);
-    }
-
-    throw new Error("connection not found");
-  }
+  @Inject()
+  registry: MikroOrmRegistry;
 
   // Выполнение запроса
-  async apply(connectionId: number, { query, params }: ConnectionApplyParams) {
-    if (!connectionId) {
-      return this.prisma.$queryRawUnsafe(query);
+  async apply(contextName: string, { query, params }: ConnectionApplyParams) {
+    const orm = this.registry.get(contextName);
+    if (!orm?.em) {
+      throw new Error("connection not found");
     }
-
-    const connectionParams = await this.connectionService.findUnique({
-      where: { id: connectionId },
-    });
-    if (connectionParams) {
-      const connection = this.connect(
-        connectionParams.provider,
-        connectionParams.connectionUrl
-      );
-      return connection.apply({ query, params });
-    }
-    throw new Error("connection not found");
+    return orm.em.getConnection().execute(query);
   }
 
   // Парсинг параметров для подключения
@@ -112,9 +94,7 @@ export class ConnectionService {
 
   // Получение всех подключений
   findMany() {
-    return this.connectionService.findMany({
-      select: this.connectionSects,
-    });
+    return getConnectionList();
   }
 
   // Создание нового подключения
@@ -144,6 +124,9 @@ export class ConnectionService {
     });
     const connections = getConnections();
     const contextName = connections.length === 0 ? "default" : randomName;
+    if (connections.length === 0) {
+      await this.createSchema(config);
+    }
     const updateConnections = [
       ...connections,
       {
@@ -161,6 +144,32 @@ export class ConnectionService {
     });
     const result = await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
     return { result: true };
+  }
+
+  async createSchema(config: ConnectionsModel | ConnectionsModelByUrl) {
+    const orm = await MikroORM.init({
+      ...(config as Options),
+      entities: [`./src/entities/default/*.ts`],
+    });
+    const generator = orm.getSchemaGenerator();
+
+    const dropDump = await generator.getDropSchemaSQL();
+    console.log(dropDump);
+
+    const createDump = await generator.getCreateSchemaSQL();
+    console.log(createDump);
+
+    const updateDump = await generator.getUpdateSchemaSQL();
+    console.log(updateDump);
+
+    // there is also `generate()` method that returns drop + create queries
+    const dropAndCreateDump = await generator.generate();
+    console.log(dropAndCreateDump);
+
+    await generator.dropSchema();
+    await generator.createSchema();
+    await generator.updateSchema();
+    //https://github.com/tsedio/tsed/blob/production/packages/orm/mikro-orm/src/decorators/orm.ts
   }
 
   // Изменение текущего подключения по ид
