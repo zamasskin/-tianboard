@@ -1,7 +1,9 @@
 import { Configuration, Inject } from "@tsed/di";
 import { PlatformApplication } from "@tsed/common";
 import { MikroOrmModule } from "@tsed/mikro-orm";
+import "@tsed/passport";
 import "@tsed/platform-express"; // /!\ keep this import
+import session from "express-session";
 import bodyParser from "body-parser";
 import compress from "compression";
 import cookieParser from "cookie-parser";
@@ -10,6 +12,7 @@ import cors from "cors";
 import "@tsed/ajv";
 import { config, rootDir } from "./config";
 import { getConnections } from "./config/databases";
+import { User } from "./entities/default/User";
 
 @Configuration({
   ...config,
@@ -21,7 +24,10 @@ import { getConnections } from "./config/databases";
   mount: {
     "/api": [`${rootDir}/controllers/**/*.ts`],
   },
-  componentsScan: [`./services/**/**.js`],
+  componentsScan: [`./services/**/**.js`, `${rootDir}/protocols/**/*.ts`],
+  passport: {
+    userInfoModel: User,
+  },
   customServiceOptions: {},
   views: {
     root: `${rootDir}/views`,
@@ -48,6 +54,20 @@ export class Server {
       .use(
         bodyParser.urlencoded({
           extended: true,
+        })
+      )
+      .use(
+        session({
+          secret: "mysecretkey",
+          resave: true,
+          saveUninitialized: true,
+          // maxAge: 36000,
+          cookie: {
+            path: "/",
+            httpOnly: true,
+            secure: false,
+            // maxAge: null
+          },
         })
       );
   }

@@ -29,6 +29,7 @@ export class AccountModel {
   password: string;
 
   @Enum([UserRole])
+  @Required()
   roles: UserRole[] = [UserRole.User];
 
   @Enum(UserStatus)

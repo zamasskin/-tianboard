@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
 import { MikroOrmRegistry, Orm } from "@tsed/mikro-orm";
-import path from "path";
+
 import {
   uniqueNamesGenerator,
   adjectives,
@@ -16,8 +16,7 @@ import {
   ConnectionApplyParams,
   ConnectionCreateParams,
 } from "src/interfaces/ConnectionParams";
-import { PrismaService } from "../PrismaService";
-import { ConnectionsRepository } from "./ConnectionsRepository";
+import { PrismaService } from "./PrismaService";
 import {
   ConnectionsModel,
   ConnectionsModelByFile,
@@ -32,17 +31,8 @@ import {
 import { rootDir } from "src/config";
 import { Options, MikroORM } from "@mikro-orm/core";
 
-// При подключении новых провайдеров типы заводятся тут(например для провайдера mongoDb)
-type provider = Knex;
-
 @Injectable()
 export class ConnectionService {
-  @Inject()
-  protected connectionService: ConnectionsRepository;
-
-  @Orm("default")
-  private readonly orm!: MikroORM;
-
   @Inject()
   prisma: PrismaService;
 
@@ -173,28 +163,7 @@ export class ConnectionService {
   }
 
   // Изменение текущего подключения по ид
-  update(id: number, config: ConnectionCreateParams) {
-    let connectionUrl: string | undefined = undefined;
-    if (config.url || config.params) {
-      connectionUrl = this.getConnectionUrlByParams(config);
-    }
+  update(id: number, config: ConnectionCreateParams) {}
 
-    return this.connectionService.update({
-      where: { id },
-      select: this.connectionSects,
-      data: {
-        name: config.name,
-        provider: config.provider,
-        connectionUrl,
-        updatedAt: new Date(),
-      },
-    });
-  }
-
-  delete(id: number) {
-    return this.connectionService.delete({
-      where: { id },
-      select: this.connectionSects,
-    });
-  }
+  delete(id: number) {}
 }

@@ -20,9 +20,11 @@ if (isMainThread) {
 
   const log = console.log;
   const events = ["modified", "created", "moved"];
-  watcher.on("raw", (event: string) => {
-    if (events.includes(event)) {
-      process.exit(1);
-    }
+  watcher.once("raw", (event: string) => {
+    setTimeout(() => {
+      if (events.includes(event)) {
+        process.exit(1);
+      }
+    }, 1)
   });
 }

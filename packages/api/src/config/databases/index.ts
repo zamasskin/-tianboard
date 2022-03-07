@@ -10,9 +10,10 @@ export function getConnections(): Options[] {
     return [];
   }
 
-  return connections.map((connection) =>
-    _.omit(connection, "connectionName")
-  ) as Options[];
+  return connections.map((connection) => ({
+    ..._.omit(connection, "connectionName"),
+    allowGlobalContext: true,
+  })) as Options[];
 }
 
 export function getConnectionList() {
