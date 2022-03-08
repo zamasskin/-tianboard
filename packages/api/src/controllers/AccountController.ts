@@ -1,12 +1,11 @@
 import { BodyParams, Cookies, Req, Res, UseAuth } from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { Get, parameters, Post } from "@tsed/schema";
+import { Get, Post } from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
 import { AccountModel, UserRole } from "src/models/AccountModel";
 import { AccountService } from "src/services/AccountService";
 import { Authenticate } from "@tsed/passport";
 import { User } from "src/entities/default/User";
-import { LoginModel } from "src/models/LoginModel";
 import { UserDto } from "src/dto/UserDto";
 import { Auth } from "src/decorators/Auth";
 import { RefreshTokenModel } from "src/models/RefreshTokenModel";
@@ -21,9 +20,9 @@ export class AccountController {
     return "hello";
   }
 
-  @Post("/create")
+  @Post("/signup")
   @Authenticate("signup")
-  async create(
+  async signUp(
     @Req() req: Req,
     @BodyParams(AccountModel) account: AccountModel
   ) {
@@ -52,13 +51,19 @@ export class AccountController {
     return userData;
   }
 
-  @Post("/signup")
+  @Post("/create")
   @Auth()
   @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
-  async signUp(@BodyParams(AccountModel) account: AccountModel) {
+  async create(@BodyParams(AccountModel) account: AccountModel) {
     const user = await this.service.create(account);
     const signUser = await this.service.signUp(user);
     return new UserDto(signUser);
+  }
+
+  @Post("/user")
+  @Auth()
+  getUser(@Req() req: Req) {
+    return req.user;
   }
 
   @Get("/logout")

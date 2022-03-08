@@ -53,7 +53,7 @@ export class AccountService {
   }
 
   async response(user: User) {
-    const token = this.tokenService.generateTokens(user);
+    const token = this.tokenService.generateTokens(new UserDto(user));
     await this.tokenService.saveToken(user, token.refreshToken);
     return {
       ...token,
@@ -73,7 +73,8 @@ export class AccountService {
     if (!userData || !tokenFromDb) {
       throw new Unauthorized("Unauthorized 1");
     }
-    const user = await this.findOne({ id: tokenFromDb.id });
+
+    const user = await this.findOne({ id: tokenFromDb.user.id });
     if (!user) {
       throw new Unauthorized("Unauthorized 2");
     }

@@ -1,7 +1,7 @@
 import { Req } from "@tsed/common";
 import { Inject } from "@tsed/di";
 import { BadRequest, Unauthorized } from "@tsed/exceptions";
-import { Arg, OnVerify, Protocol } from "@tsed/passport";
+import { Arg, Args, OnVerify, Protocol } from "@tsed/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { User } from "src/entities/default/User";
 import { AccountService } from "src/services/AccountService";
@@ -14,7 +14,7 @@ import bcrypt from "bcrypt";
   settings: {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET || "JWT_ACCESS_SECRET",
-    expiresIn: "30s",
+    expiresIn: "1120s",
     // issuer: process.env.JWT_ISSUER || "localhost",
     // audience: process.env.JWT_AUDIENCE || "localhost",
   },
@@ -28,17 +28,18 @@ export class JwtProtocol implements OnVerify {
 
   async $onVerify(
     @Req() req: Express.Request,
-    @Arg(0) jwtPayload: User
+    @Arg(0) jwtPayload: User,
+    @Args() args: any
   ): Promise<User | false> {
-    console.log("---".repeat(100));
-    const { id, password } = jwtPayload;
+    const { id } = jwtPayload;
+    console.log("-".repeat(90));
+    console.log(req, jwtPayload);
 
     const user = await this.accountService.findOne({ id });
-    if (user && user.password === password) {
-      req.user = user;
-      return user;
+    if (!user) {
+      throw new Unauthorized("Wrong token");
     }
-
-    return false;
+    req.user = user;
+    return user;
   }
 }
