@@ -71,12 +71,12 @@ export class AccountService {
     const tokenFromDb = await this.tokenService.findOne({ refreshToken });
     console.log(refreshToken, userData, tokenFromDb);
     if (!userData || !tokenFromDb) {
-      throw new Unauthorized("Unauthorized 1");
+      throw new Unauthorized("Unauthorized");
     }
 
     const user = await this.findOne({ id: tokenFromDb.user.id });
     if (!user) {
-      throw new Unauthorized("Unauthorized 2");
+      throw new Unauthorized("Unauthorized");
     }
 
     return this.response(user);
