@@ -1,6 +1,6 @@
 import { BodyParams, Cookies, Req, Res, UseAuth } from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { Get, Post } from "@tsed/schema";
+import { Get, parameters, Post } from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
 import { AccountModel, UserRole } from "src/models/AccountModel";
 import { AccountService } from "src/services/AccountService";
@@ -9,6 +9,7 @@ import { User } from "src/entities/default/User";
 import { LoginModel } from "src/models/LoginModel";
 import { UserDto } from "src/dto/UserDto";
 import { Auth } from "src/decorators/Auth";
+import { RefreshTokenModel } from "src/models/RefreshTokenModel";
 @Controller("/account")
 @Scope(ProviderScope.SINGLETON)
 export class AccountController {
@@ -69,6 +70,19 @@ export class AccountController {
   async refresh(
     @Cookies("refreshToken") refreshToken: string,
     @Res() res: Res
+  ) {
+    const userData = await this.service.refresh(refreshToken);
+    res.cookie("refreshToken", userData.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    return userData;
+  }
+
+  @Post("/refresh")
+  async refreshPost(
+    @Res() res: Res,
+    @BodyParams(RefreshTokenModel) { refreshToken }: RefreshTokenModel
   ) {
     const userData = await this.service.refresh(refreshToken);
     res.cookie("refreshToken", userData.refreshToken, {
