@@ -14,7 +14,7 @@ import bcrypt from "bcrypt";
   settings: {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET || "JWT_ACCESS_SECRET",
-    expiresIn: "1120s",
+    expiresIn: "30s",
     // issuer: process.env.JWT_ISSUER || "localhost",
     // audience: process.env.JWT_AUDIENCE || "localhost",
   },

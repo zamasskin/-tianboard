@@ -69,14 +69,13 @@ export class AccountService {
 
     const userData = this.tokenService.validateRefreshToken(refreshToken);
     const tokenFromDb = await this.tokenService.findOne({ refreshToken });
-    console.log(refreshToken, userData, tokenFromDb);
     if (!userData || !tokenFromDb) {
-      throw new Unauthorized("Unauthorized");
+      throw new Unauthorized("token not found");
     }
 
     const user = await this.findOne({ id: tokenFromDb.user.id });
     if (!user) {
-      throw new Unauthorized("Unauthorized");
+      throw new Unauthorized("user not found");
     }
 
     return this.response(user);
