@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useStoreState } from 'easy-peasy';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -16,7 +16,7 @@ import chartData from './chart-data/bajaj-area-chart';
 
 const BajajAreaChartCard = () => {
     const theme = useTheme();
-    const customization = useSelector((state) => state.customization);
+    const customization = useStoreState((state) => state.theme.data);
     const { navType } = customization;
 
     const orangeDark = theme.palette.secondary[800];

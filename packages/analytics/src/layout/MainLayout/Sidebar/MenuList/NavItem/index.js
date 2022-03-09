@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery } from '@mui/material';
 
-// project imports
-import { MENU_OPEN, SET_MENU } from 'store/actions';
 import config from 'config';
 
 // assets
@@ -17,10 +15,12 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem = ({ item, level }) => {
+    const openMenu = useStoreActions((actions) => actions.theme.openMenu);
+    const setMenu = useStoreActions((actions) => actions.theme.setMenu);
     const theme = useTheme();
-    const dispatch = useDispatch();
-    const customization = useSelector((state) => state.customization);
     const matchesSM = useMediaQuery(theme.breakpoints.down('lg'));
+
+    const customization = useStoreState((state) => state.theme.data);
 
     const Icon = item.icon;
     const itemIcon = item?.icon ? (
@@ -48,8 +48,10 @@ const NavItem = ({ item, level }) => {
     }
 
     const itemHandler = (id) => {
-        dispatch({ type: MENU_OPEN, id });
-        if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+        openMenu(id);
+        if (matchesSM) {
+            setMenu(false);
+        }
     };
 
     // active menu item on page load
@@ -59,7 +61,7 @@ const NavItem = ({ item, level }) => {
             .split('/')
             .findIndex((id) => id === item.id);
         if (currentIndex > -1) {
-            dispatch({ type: MENU_OPEN, id: item.id });
+            openMenu(item.id);
         }
         // eslint-disable-next-line
     }, []);

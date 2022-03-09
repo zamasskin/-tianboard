@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useStoreState } from 'easy-peasy';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -38,7 +38,7 @@ const status = [
 const TotalGrowthBarChart = ({ isLoading }) => {
     const [value, setValue] = useState('today');
     const theme = useTheme();
-    const customization = useSelector((state) => state.customization);
+    const customization = useStoreState((state) => state.theme.data);
 
     const { navType } = customization;
     const { primary } = theme.palette.text;

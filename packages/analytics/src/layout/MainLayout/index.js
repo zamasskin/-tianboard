@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -12,7 +12,6 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import navigation from 'menu-items';
 import { drawerWidth } from 'store/constant';
-import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
@@ -66,16 +65,16 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 const MainLayout = () => {
     const theme = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'));
+    const setMenu = useStoreActions((actions) => actions.theme.setMenu);
 
     // Handle left drawer
-    const leftDrawerOpened = useSelector((state) => state.customization.opened);
-    const dispatch = useDispatch();
+    const leftDrawerOpened = useStoreState((state) => state.theme.data.opened);
     const handleLeftDrawerToggle = () => {
-        dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
+        setMenu(!leftDrawerOpened);
     };
 
     useEffect(() => {
-        dispatch({ type: SET_MENU, opened: !matchDownMd });
+        setMenu(!matchDownMd);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [matchDownMd]);
 

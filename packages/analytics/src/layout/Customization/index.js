@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -24,7 +24,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { SET_BORDER_RADIUS, SET_FONT_FAMILY } from 'store/actions';
 import { gridSpacing } from 'store/constant';
 
 // concat 'px'
@@ -35,9 +34,10 @@ function valueText(value) {
 // ==============================|| LIVE CUSTOMIZATION ||============================== //
 
 const Customization = () => {
+    const setStoreFontFamily = useStoreActions((actions) => actions.theme.setFontFamily);
+    const setStoreBorderRadius = useStoreActions((actions) => actions.theme.setBorderRadius);
     const theme = useTheme();
-    const dispatch = useDispatch();
-    const customization = useSelector((state) => state.customization);
+    const customization = useStoreState((state) => state.theme.data);
 
     // drawer on/off
     const [open, setOpen] = useState(false);
@@ -52,8 +52,8 @@ const Customization = () => {
     };
 
     useEffect(() => {
-        dispatch({ type: SET_BORDER_RADIUS, borderRadius });
-    }, [dispatch, borderRadius]);
+        setStoreBorderRadius(borderRadius);
+    }, [borderRadius]);
 
     let initialFont;
     switch (customization.fontFamily) {
@@ -85,8 +85,8 @@ const Customization = () => {
                 newFont = `'Roboto', sans-serif`;
                 break;
         }
-        dispatch({ type: SET_FONT_FAMILY, fontFamily: newFont });
-    }, [dispatch, fontFamily]);
+        setStoreFontFamily(newFont);
+    }, [fontFamily]);
 
     return (
         <>

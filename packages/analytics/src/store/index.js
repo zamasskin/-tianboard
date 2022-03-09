@@ -1,9 +1,10 @@
-import { createStore } from 'redux';
-import reducer from './reducer';
+import { createStore } from 'easy-peasy';
+import createTheme from './theme';
 
-// ==============================|| REDUX - MAIN STORE ||============================== //
+const store = createStore({
+    theme: {
+        ...createTheme()
+    }
+});
 
-const store = createStore(reducer);
-const persister = 'Free';
-
-export { store, persister };
+export default store;
