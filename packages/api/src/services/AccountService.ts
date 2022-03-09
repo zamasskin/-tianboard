@@ -80,4 +80,8 @@ export class AccountService {
 
     return this.response(user);
   }
+
+  logout(refreshToken: string) {
+    return this.tokenService.remove({ refreshToken });
+  }
 }

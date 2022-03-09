@@ -22,6 +22,11 @@ export class TokenService {
     return this.repository.findOne(where);
   }
 
+  async remove(where: FilterQuery<Token>) {
+    const token = await this.repository.find(where);
+    await this.repository.removeAndFlush(token);
+  }
+
   async saveToken(user: User, refreshToken: string) {
     let token = await this.repository.findOne({ user });
     if (token) {

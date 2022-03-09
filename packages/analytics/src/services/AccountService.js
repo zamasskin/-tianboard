@@ -1,4 +1,4 @@
-import $api from 'http';
+import $api from '../http';
 
 class AccountService {
     static async login(email, password) {
@@ -14,6 +14,7 @@ class AccountService {
     }
 
     static async bootstrap(account) {
+        console.log(account);
         return $api.post('/account/bootstrap', account);
     }
 

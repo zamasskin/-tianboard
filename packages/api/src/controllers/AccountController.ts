@@ -67,7 +67,9 @@ export class AccountController {
   }
 
   @Get("/logout")
-  logout(@Req() req: Req) {
+  async logout(@Req() req: Req, @Res() res: Res) {
+    await this.service.logout(req.cookies["refreshToken"]);
+    res.clearCookie("refreshToken");
     req.logout();
   }
 

@@ -1,9 +1,13 @@
 import { createStore } from 'easy-peasy';
-import createTheme from './theme';
+import themeStore from './themeStore';
+import accountStore from './accountStore';
 
 const store = createStore({
     theme: {
-        ...createTheme()
+        ...themeStore()
+    },
+    account: {
+        ...accountStore()
     }
 });
 

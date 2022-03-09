@@ -1,7 +1,7 @@
 import { action } from 'easy-peasy';
 import config from 'config';
 
-export default function createTheme() {
+export default function themeStore() {
     return {
         data: {
             isOpen: [], // for active default menu

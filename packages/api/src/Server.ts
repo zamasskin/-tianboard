@@ -46,7 +46,12 @@ export class Server {
 
   $beforeRoutesInit(): void {
     this.app
-      .use(cors())
+      .use(
+        cors({
+          credentials: true,
+          origin: "http://localhost:4200",
+        })
+      )
       .use(cookieParser())
       .use(compress({}))
       .use(methodOverride())

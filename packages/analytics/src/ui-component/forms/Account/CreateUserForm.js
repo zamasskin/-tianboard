@@ -36,7 +36,8 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
         secondName: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        roles: ['user']
     };
 
     const validationSchema = yup.object().shape({
