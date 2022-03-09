@@ -23,9 +23,9 @@ export class SignupLocalProtocol implements OnVerify {
 
   async $onVerify(@BodyParams(AccountModel) account: AccountModel) {
     const count = await this.accountService.count();
-    // if (count > 0) {
-    //   throw new Forbidden("Суперпользователь уже создан");
-    // }
+    if (count > 0) {
+      throw new Forbidden("Суперпользователь уже создан");
+    }
     const user = await this.accountService.create(account);
     return this.accountService.signUp(user);
   }
