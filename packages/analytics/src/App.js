@@ -84,8 +84,8 @@ const AppContent = () => {
                     <Route path="/icons/tabler-icons" element={<UtilsMaterialIcons />} />
                     <Route path="/icons/material-icons" element={<UtilsTablerIcons />} />
                     <Route path="/account/settings" element={<Settings />} />
-                    <Route path="/admin/database" element={<Databases />} />
-                    <Route path="/admin/users" element={<Users />} />
+                    <Route path="/admin/admin-database" element={<Databases />} />
+                    <Route path="/admin/admin-users" element={<Users />} />
                 </Route>
             </Route>
             <Route path="/login" element={<MinimalLayout />}>

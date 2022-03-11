@@ -3,7 +3,7 @@ import { IconDatabase, IconUser } from '@tabler/icons';
 const icons = { IconDatabase, IconUser };
 
 const admin = {
-    id: 'admin',
+    id: 'adminstration',
     title: 'Администрирование',
     type: 'group',
     children: [
@@ -11,15 +11,15 @@ const admin = {
             id: 'admin-database',
             title: 'Подключения',
             type: 'item',
-            url: '/admin/database',
+            url: '/admin/admin-database',
             icon: icons.IconDatabase,
             breadcrumbs: false
         },
         {
-            id: 'admin-admin',
+            id: 'admin-users',
             title: 'Пользователи',
             type: 'item',
-            url: '/admin/users',
+            url: '/admin/admin-users',
             icon: icons.IconUser,
             breadcrumbs: false
         }
