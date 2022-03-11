@@ -18,7 +18,7 @@ export class CheckRoleMiddleware implements MiddlewareMethods {
     const options = ctx.endpoint.get(CheckRoleMiddleware) || {};
 
     if (!request?.isAuthenticated()) {
-      throw new Unauthorized("Unauthorized");
+      throw new Unauthorized("Unauthorized 1");
     }
 
     const user = request?.user as User;

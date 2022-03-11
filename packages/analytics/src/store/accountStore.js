@@ -58,9 +58,12 @@ export default function accountStore() {
                 localStorage.setItem('token', response.data.accessToken);
                 actions.setAuth(true);
                 actions.setUser(response.data.user);
-                return true;
+                return response.data;
             } catch (e) {
-                console.log(e?.response?.data);
+                if (e?.response?.status === 401) {
+                    actions.setAuth(false);
+                    actions.setUser(false);
+                }
                 return false;
             }
         })

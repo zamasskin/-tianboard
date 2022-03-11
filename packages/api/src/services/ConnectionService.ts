@@ -1,5 +1,6 @@
 import _ from "lodash";
 import fs from "fs-extra";
+import path from "path";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
 import { MikroOrmRegistry, Orm } from "@tsed/mikro-orm";
@@ -10,7 +11,6 @@ import {
   colors,
   animals,
 } from "unique-names-generator";
-import { Knex } from "knex";
 
 import {
   ConnectionApplyParams,
@@ -28,9 +28,10 @@ import {
   configPath,
   getConnectionList,
 } from "src/config/databases";
-import { rootDir } from "src/config";
 import { Options, MikroORM } from "@mikro-orm/core";
 import { User } from "src/entities/default/User";
+import { Forbidden, NotFound } from "@tsed/exceptions";
+import { rootDir } from "src/config";
 
 @Injectable()
 export class ConnectionService {
@@ -164,9 +165,43 @@ export class ConnectionService {
   }
 
   // Изменение текущего подключения по ид
-  update(id: number, config: ConnectionCreateParams) {}
+  update(id: string, config: ConnectionCreateParams) {}
 
-  delete(id: number) {}
+  async delete(id: string) {
+    if (id === "default") {
+      throw new Forbidden("This connection cannot be deleted.");
+    }
+
+    const configurations = getConfigurations();
+    const connections = _.get(configurations, "connections");
+    const deleteConnection = connections.find(
+      ({ contextName }: { contextName: string }) => contextName === id
+    );
+    if (!deleteConnection) {
+      throw new NotFound("connection not found");
+    }
+
+    if (
+      deleteConnection.clientUrl &&
+      deleteConnection.clientUrl.substr(0, 7) === "file://"
+    ) {
+      const search = deleteConnection.clientUrl.match(/\/((\w|\.)+)$/);
+      if (search && search.length > 1) {
+        fs.rmSync(path.join(rootDir, "../", search[1]));
+      }
+    }
+
+    const updateConnections = connections.filter(
+      ({ contextName }: { contextName: string }) => contextName !== id
+    );
+
+    const updateConfig = { ...configurations, connections: updateConnections };
+
+    console.log(updateConfig);
+
+    await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
+    return { result: true };
+  }
 
   async isBootstrap() {
     let userInstalled = false;

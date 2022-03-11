@@ -32,8 +32,6 @@ export class JwtProtocol implements OnVerify {
     @Args() args: any
   ): Promise<User | false> {
     const { id } = jwtPayload;
-    console.log("-".repeat(90));
-    console.log(req, jwtPayload);
 
     const user = await this.accountService.findOne({ id });
     if (!user) {

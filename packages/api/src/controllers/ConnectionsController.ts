@@ -1,9 +1,11 @@
 import { BodyParams, PathParams, UseAuth } from "@tsed/common";
 import { Controller, Inject } from "@tsed/di";
 import { ContentType, Get, Post, Put, Delete } from "@tsed/schema";
+import { Auth } from "src/decorators/Auth";
 import { ConnectionCreateParams } from "src/interfaces/ConnectionParams";
 import { BootstrapCheckConnectionsMiddleware } from "src/middlewares/BootstrapCheckConnectionsMiddleware";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
+import { UserRole } from "src/models/AccountModel";
 import {
   ConnectionsModel,
   ConnectionsModelByFile,
@@ -24,13 +26,15 @@ export class ConnectionController {
   }
 
   @Post("/create")
-  @UseAuth(CheckRoleMiddleware)
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   create(@BodyParams(ConnectionsModel) config: ConnectionsModel) {
     return this.connectionService.create(config);
   }
 
   @Post("/create/by-file")
-  @UseAuth(CheckRoleMiddleware)
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   createByFile(
     @BodyParams(ConnectionsModelByFile) config: ConnectionsModelByFile
   ) {
@@ -38,7 +42,8 @@ export class ConnectionController {
   }
 
   @Post("/create/by-url")
-  @UseAuth(CheckRoleMiddleware)
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   createByUrl(
     @BodyParams(ConnectionsModelByUrl) config: ConnectionsModelByUrl
   ) {
@@ -46,7 +51,8 @@ export class ConnectionController {
   }
 
   @Post("/:contextName")
-  @UseAuth(CheckRoleMiddleware)
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   apply(
     @PathParams("contextName") contextName: string,
     @BodyParams(DatabaseQueryModel) params: DatabaseQueryModel
@@ -55,17 +61,19 @@ export class ConnectionController {
   }
 
   @Put("/:id")
-  @UseAuth(CheckRoleMiddleware)
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   update(
-    @PathParams("id") id: number,
+    @PathParams("id") id: string,
     @BodyParams() config: ConnectionCreateParams
   ) {
     return this.connectionService.update(id, config);
   }
 
   @Delete("/:id")
-  @UseAuth(CheckRoleMiddleware)
-  delete(@PathParams("id") id: number) {
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  delete(@PathParams("id") id: string) {
     return this.connectionService.delete(id);
   }
 

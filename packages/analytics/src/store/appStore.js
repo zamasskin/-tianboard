@@ -24,7 +24,6 @@ export default function appStore() {
         }),
         bootstrap: thunk(async (action, payload) => {
             const { formType, ...params } = payload;
-            console.log(formType, params);
             if (formType === 'file') {
                 await ConnectionService.bootstrapFile(params);
             } else if (formType === 'url') {

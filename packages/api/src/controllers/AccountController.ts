@@ -62,8 +62,9 @@ export class AccountController {
 
   @Post("/user")
   @Auth()
-  getUser(@Req() req: Req) {
-    return req.user;
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  getUser(@Req("user") user: User) {
+    return new UserDto(user);
   }
 
   @Get("/logout")
