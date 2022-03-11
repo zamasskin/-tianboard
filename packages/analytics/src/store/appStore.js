@@ -2,6 +2,7 @@ import axios from 'axios';
 import { action, thunk, computed } from 'easy-peasy';
 
 import config from 'config';
+import ConnectionService from 'services/ConnectionService';
 
 export default function appStore() {
     return {
@@ -20,7 +21,18 @@ export default function appStore() {
             const response = await axios.get(`${config.apiUrl}/connections/bootstrap`, { withCredentials: true });
             actions.setConnectionInstalled(!!response.data.connectionInstalled);
             actions.setUserInstalled(!!response.data.userInstalled);
-            localStorage.setItem('installed', response.data.connectionInstalled && response.data.userInstalled);
+        }),
+        bootstrap: thunk(async (action, payload) => {
+            const { formType, ...params } = payload;
+            console.log(formType, params);
+            if (formType === 'file') {
+                await ConnectionService.bootstrapFile(params);
+            } else if (formType === 'url') {
+                await ConnectionService.bootstrapUrl(params);
+            } else {
+                await ConnectionService.bootstrap(params);
+            }
+            action.setConnectionInstalled(true);
         })
     };
 }

@@ -1,5 +1,5 @@
 import { Grid, Stack, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useStoreActions } from 'easy-peasy';
 
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
@@ -8,14 +8,13 @@ import Logo from 'ui-component/Logo';
 import CreateUserForm from 'ui-component/forms/Account/CreateUserForm';
 
 const CreateUser = () => {
-    const navigate = useNavigate();
     const createUser = useStoreActions((actions) => actions.account.bootstrap);
+    const setUserInstalled = useStoreActions((actions) => actions.app.setUserInstalled);
     const onSubmit = async (form, { setErrors, setSubmitting }) => {
         try {
             await createUser(form);
-            navigate('/');
+            setUserInstalled(true);
         } catch (e) {
-            console.log('err');
             setErrors({ submit: e?.response?.data?.message || e.message });
         } finally {
             setSubmitting(false);
@@ -39,11 +38,7 @@ const CreateUser = () => {
                                             <Grid item>
                                                 <Stack alignItems="center" justifyContent="center" spacing={1}>
                                                     <Typography variant="h3">Создание администратора</Typography>
-                                                    <Typography
-                                                        variant="caption"
-                                                        fontSize="16px"
-                                                        // textAlign={matchDownSM ? 'center' : 'inherit'}
-                                                    >
+                                                    <Typography variant="caption" fontSize="16px">
                                                         Введите свои учетные данные, чтобы продолжить
                                                     </Typography>
                                                 </Stack>

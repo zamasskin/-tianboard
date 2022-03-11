@@ -14,7 +14,6 @@ class AccountService {
     }
 
     static async bootstrap(account) {
-        console.log(account);
         return $api.post('/account/bootstrap', account);
     }
 

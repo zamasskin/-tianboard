@@ -1,5 +1,15 @@
-import _ from 'lodash';
-import { FormControl, InputLabel, OutlinedInput, Button, Box, Grid, useMediaQuery, InputAdornment, IconButton, Alert } from '@mui/material';
+import {
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    Button,
+    Box,
+    Grid,
+    useMediaQuery,
+    InputAdornment,
+    IconButton,
+    FormHelperText
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
@@ -13,10 +23,7 @@ import Error from 'ui-component/forms/validation/Error';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { fetchPostJson } from 'api/fetch';
-
-function FromConnection2({ connectionType, defaultPort, onSuccess }) {
-    const [error, setError] = useState(false);
+function FromConnection2({ connectionType, defaultPort, onSubmit }) {
     const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -26,7 +33,8 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
         host: '',
         user: '',
         password: '',
-        type: connectionType
+        type: connectionType,
+        formType: 'default'
     };
     const validationSchema = Yup.object().shape({
         connectionName: Yup.string().required('требуется название'),
@@ -48,23 +56,8 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
         event.preventDefault();
     };
 
-    const handleSubmit = async (value) => {
-        setError(false);
-        try {
-            const result = await fetchPostJson('/connections/create', value);
-            if (_.has(result, 'errors') && _.has(result, 'message')) {
-                throw new Error(_.get(result, 'message'));
-            }
-            if (onSuccess) {
-                onSuccess(true);
-            }
-        } catch (e) {
-            setError(e.message);
-        }
-    };
-
     return (
-        <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={handleSubmit}>
+        <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
                     <FormControl
@@ -159,6 +152,11 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
                         />
                         <Error error={errors.password} touched={touched.password} />
                     </FormControl>
+                    {errors.submit && (
+                        <Box sx={{ mt: 3 }}>
+                            <FormHelperText error>{errors.submit}</FormHelperText>
+                        </Box>
+                    )}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <Button
@@ -174,11 +172,6 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
                             </Button>
                         </AnimateButton>
                     </Box>
-                    {error && (
-                        <Box sx={{ mt: 2 }}>
-                            <Alert severity="error">{error}</Alert>
-                        </Box>
-                    )}
                 </form>
             )}
         </Formik>
@@ -188,7 +181,7 @@ function FromConnection2({ connectionType, defaultPort, onSuccess }) {
 FromConnection2.propTypes = {
     connectionType: PropTypes.string,
     defaultPort: PropTypes.string,
-    onSuccess: PropTypes.func
+    onSubmit: PropTypes.func
 };
 
 export default FromConnection2;

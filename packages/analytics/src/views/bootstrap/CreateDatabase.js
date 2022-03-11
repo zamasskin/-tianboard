@@ -1,5 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Grid, Box, Typography, Stack } from '@mui/material';
+import { useStoreActions } from 'easy-peasy';
 
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
@@ -7,10 +8,15 @@ import Logo from 'ui-component/Logo';
 import CreateConnectionForm from 'ui-component/forms/CreateConnectionForm';
 
 function CreateDatabase() {
-    const navigate = useNavigate();
-    // console.log(useHistory);
-    const onSuccess = () => {
-        navigate('/bootstrap/user');
+    const createDatabase = useStoreActions((actions) => actions.app.bootstrap);
+    const onSubmit = async (form, { setErrors, setSubmitting }) => {
+        try {
+            await createDatabase(form);
+        } catch (e) {
+            setErrors({ submit: e?.response?.data?.message || e.message });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -39,7 +45,7 @@ function CreateDatabase() {
                                         <Grid container alignItems="center" justifyContent="center">
                                             <Grid item xs={12}>
                                                 <Box>
-                                                    <CreateConnectionForm onSuccess={onSuccess} />
+                                                    <CreateConnectionForm onSubmit={onSubmit} />
                                                 </Box>
                                             </Grid>
                                         </Grid>

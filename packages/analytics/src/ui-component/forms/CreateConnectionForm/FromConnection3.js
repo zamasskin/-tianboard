@@ -1,45 +1,27 @@
-import { useState } from 'react';
-import { FormControl, InputLabel, OutlinedInput, Button, Box, Alert } from '@mui/material';
+import { FormControl, InputLabel, OutlinedInput, Button, Box, FormHelperText } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import _ from 'lodash';
 
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Formik } from 'formik';
 import ErrorComponent from 'ui-component/forms/validation/Error';
-import { fetchPostJson } from 'api/fetch';
 
-function FromConnection3({ connectionType, placeholder, onSuccess }) {
-    const [error, setError] = useState(false);
+function FromConnection3({ connectionType, placeholder, onSubmit }) {
     const theme = useTheme();
     const initValues = {
         connectionName: '',
         clientUrl: '',
-        type: connectionType
+        type: connectionType,
+        formType: 'url'
     };
     const validationSchema = Yup.object().shape({
         connectionName: Yup.string().required('требуется название'),
         clientUrl: Yup.string().required('требуется URL')
     });
 
-    const handleSubmit = async (value) => {
-        setError(false);
-        try {
-            const result = await fetchPostJson('/connections/create/by-url', value);
-            if (_.has(result, 'errors') && _.has(result, 'message')) {
-                throw new Error(_.get(result, 'message'));
-            }
-            if (onSuccess) {
-                onSuccess(true);
-            }
-        } catch (e) {
-            setError(e.message);
-        }
-    };
-
     return (
-        <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={handleSubmit} onChange={() => setError(false)}>
+        <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                 <form noValidate onSubmit={handleSubmit}>
                     <FormControl
@@ -78,6 +60,11 @@ function FromConnection3({ connectionType, placeholder, onSuccess }) {
                         />
                         <ErrorComponent error={errors.clientUrl} touched={touched.clientUrl} />
                     </FormControl>
+                    {errors.submit && (
+                        <Box sx={{ mt: 3 }}>
+                            <FormHelperText error>{errors.submit}</FormHelperText>
+                        </Box>
+                    )}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <Button
@@ -93,11 +80,6 @@ function FromConnection3({ connectionType, placeholder, onSuccess }) {
                             </Button>
                         </AnimateButton>
                     </Box>
-                    {error && (
-                        <Box sx={{ mt: 2 }}>
-                            <Alert severity="error">{error}</Alert>
-                        </Box>
-                    )}
                 </form>
             )}
         </Formik>
@@ -107,7 +89,7 @@ function FromConnection3({ connectionType, placeholder, onSuccess }) {
 FromConnection3.propTypes = {
     connectionType: PropTypes.string,
     placeholder: PropTypes.string,
-    onSuccess: PropTypes.func
+    onSubmit: PropTypes.func
 };
 
 export default FromConnection3;
