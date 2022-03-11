@@ -34,6 +34,10 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const DashboardEdit = Loadable(lazy(() => import('views/dashboard/Edit')));
 
+// admin
+const Databases = Loadable(lazy(() => import('views/admin/Databases')));
+const Users = Loadable(lazy(() => import('views/admin/Users')));
+
 // ==============================|| APP ||============================== //
 
 const PrivateOutlet = () => {
@@ -80,6 +84,8 @@ const AppContent = () => {
                     <Route path="/icons/tabler-icons" element={<UtilsMaterialIcons />} />
                     <Route path="/icons/material-icons" element={<UtilsTablerIcons />} />
                     <Route path="/account/settings" element={<Settings />} />
+                    <Route path="/admin/database" element={<Databases />} />
+                    <Route path="/admin/users" element={<Users />} />
                 </Route>
             </Route>
             <Route path="/login" element={<MinimalLayout />}>

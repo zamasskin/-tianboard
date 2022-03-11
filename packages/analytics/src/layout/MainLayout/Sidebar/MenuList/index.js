@@ -1,13 +1,16 @@
 // material-ui
 import { Typography } from '@mui/material';
+import { useStoreState } from 'easy-peasy';
 
 // project imports
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
+import { createNavigation } from 'menu-items';
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
+    const user = useStoreState((state) => state.account.data.user);
+    const menuItem = createNavigation(user.groups);
     const navItems = menuItem.items.map((item) => {
         switch (item.type) {
             case 'group':

@@ -10,7 +10,7 @@ import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from '@mui/material'
 import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import navigation from 'menu-items';
+import { createNavigation } from 'menu-items';
 import { drawerWidth } from 'store/constant';
 
 // assets
@@ -66,6 +66,8 @@ const MainLayout = () => {
     const theme = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'));
     const setMenu = useStoreActions((actions) => actions.theme.setMenu);
+    const user = useStoreState((state) => state.account.data.user);
+    const navigation = createNavigation(user.groups);
 
     // Handle left drawer
     const leftDrawerOpened = useStoreState((state) => state.theme.data.opened);
