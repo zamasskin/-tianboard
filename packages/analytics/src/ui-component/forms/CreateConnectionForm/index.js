@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Box, Tabs, Tab, Typography, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import FromConnection1 from './FromConnection1';
 import FromConnection2 from './FromConnection2';
@@ -51,31 +52,31 @@ function PostgresqlForm(props) {
 const dataBases = [
     {
         label: 'Sqlite',
-        id: 'Sqlite',
+        id: 'sqlite',
         title: 'Подключение к sqlite',
         component: (props) => <FromConnection1 connectionType="sqlite" {...props} />
     },
     {
         label: 'Mariadb',
-        id: 'Mariadb',
+        id: 'mariadb',
         title: 'Подключение к Mariadb',
         component: (props) => <FromConnection2 connectionType="mariadb" defaultPort="3306" {...props} />
     },
     {
         label: 'MySql',
-        id: 'MySql',
+        id: 'mysql',
         title: 'Подключение к MySql',
         component: (props) => <FromConnection2 connectionType="mysql" defaultPort="3306" {...props} />
     },
     {
         label: 'Postgresql',
-        id: 'Postgresql',
+        id: 'postgresql',
         title: 'Подключение к Postgresql',
         component: (props) => <PostgresqlForm {...props} />
     },
     {
         label: 'Mongodb',
-        id: 'Mongodb',
+        id: 'mongo',
         title: 'Подключение к Mongodb',
         component: (props) => <FromConnection3 connectionType="mongo" placeholder="mongodb://localhost:27017/admin" {...props} />
     }
@@ -111,12 +112,14 @@ TabPanel.propTypes = {
     title: PropTypes.string
 };
 
-const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'Подключить' }) => {
-    const [value, setValue] = React.useState(0);
+const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'Подключить', params = {} }) => {
+    const key = Number(_.findKey(dataBases, { id: params?.type })) || 0;
+    const [value, setValue] = React.useState(key);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     return (
         <Grid container alignItems="center" justifyContent="center">
             <Grid item xs={12}>
@@ -130,7 +133,7 @@ const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'П�
                     </Box>
                     {dataBases.map((db, i) => (
                         <TabPanel key={i} value={value} index={i} title={db.title}>
-                            {React.createElement(db.component, { onSubmit, connectionName, submitName })}
+                            {React.createElement(db.component, { onSubmit, submitName, params })}
                         </TabPanel>
                     ))}
                 </Box>
@@ -141,8 +144,8 @@ const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'П�
 
 CreateConnectionForm.propTypes = {
     onSubmit: PropTypes.func,
-    connectionName: PropTypes.string,
-    submitName: PropTypes.string
+    submitName: PropTypes.string,
+    params: PropTypes.object
 };
 
 export default CreateConnectionForm;

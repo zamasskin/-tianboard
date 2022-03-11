@@ -23,7 +23,15 @@ export function getConnectionList() {
   }
 
   return connections.map((connection) =>
-    _.pick(connection, ["connectionName", "type", "contextName"])
+    _.pick(connection, [
+      "connectionName",
+      "type",
+      "contextName",
+      "port",
+      "host",
+      "dbName",
+      "user",
+    ])
   );
 }
 

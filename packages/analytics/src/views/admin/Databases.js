@@ -39,6 +39,7 @@ const Databases = () => {
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const [openModalUpdate, setOpenModalUpdate] = useState(false);
     const [selectionModel, setSelectionModel] = useState([]);
+    const [updateParams, setUpdateParams] = useState(undefined);
 
     async function loadDatabase() {
         try {
@@ -77,6 +78,13 @@ const Databases = () => {
         console.log(form);
     };
 
+    const setSelect = (newSelection) => {
+        const id = _.first(newSelection);
+        const updateParams = connections.find((conn) => conn.id === id);
+        setSelectionModel(newSelection);
+        setUpdateParams(updateParams);
+    };
+
     const deleteConnection = async () => {
         setOpen(false);
         try {
@@ -84,7 +92,7 @@ const Databases = () => {
             const id = _.first(selectionModel);
             await ConnectionService.delete(id);
             setConnections(connections.filter((conn) => conn.id !== id));
-            setSelectionModel([]);
+            setSelect([]);
         } catch (e) {
             setError(e?.response?.data?.message || e.message);
         }
@@ -106,7 +114,7 @@ const Databases = () => {
                         columns={columns}
                         rows={connections}
                         selectionModel={selectionModel}
-                        onSelectionModelChange={(newSelection) => setSelectionModel(newSelection)}
+                        onSelectionModelChange={setSelect}
                         components={{
                             Toolbar: () => (
                                 <GridToolbarContainer>
@@ -153,7 +161,7 @@ const Databases = () => {
             </Modal>
             <Modal open={openModalUpdate} onClose={() => setOpenModalUpdate(false)}>
                 <Box sx={style}>
-                    <CreateConnectionForm onSubmit={onSubmitUpdate} submitName="Изменить" />
+                    <CreateConnectionForm onSubmit={onSubmitUpdate} submitName="Изменить" params={updateParams} />
                 </Box>
             </Modal>
             <Snackbar

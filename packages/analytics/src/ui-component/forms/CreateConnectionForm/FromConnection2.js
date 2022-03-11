@@ -23,17 +23,17 @@ import Error from 'ui-component/forms/validation/Error';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-function FromConnection2({ connectionType, defaultPort, onSubmit, connectionName = '', submitName = 'Подключить' }) {
+function FromConnection2({ connectionType, defaultPort, onSubmit, submitName = 'Подключить', params = {} }) {
     const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const initValues = {
-        connectionName,
-        port: '',
-        host: '',
-        user: '',
+        connectionName: params.connectionName || '',
+        port: params.port || '',
+        host: params.host || '',
+        user: params.user || '',
         password: '',
-        dbName: '',
+        dbName: params.dbName || '',
         type: connectionType,
         formType: 'default'
     };
@@ -197,8 +197,8 @@ FromConnection2.propTypes = {
     connectionType: PropTypes.string,
     defaultPort: PropTypes.string,
     onSubmit: PropTypes.func,
-    connectionName: PropTypes.string,
-    submitName: PropTypes.string
+    submitName: PropTypes.string,
+    params: PropTypes.object
 };
 
 export default FromConnection2;
