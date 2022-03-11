@@ -111,7 +111,7 @@ TabPanel.propTypes = {
     title: PropTypes.string
 };
 
-const CreateConnectionForm = ({ onSubmit }) => {
+const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'Подключить' }) => {
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -130,7 +130,7 @@ const CreateConnectionForm = ({ onSubmit }) => {
                     </Box>
                     {dataBases.map((db, i) => (
                         <TabPanel key={i} value={value} index={i} title={db.title}>
-                            {React.createElement(db.component, { onSubmit })}
+                            {React.createElement(db.component, { onSubmit, connectionName, submitName })}
                         </TabPanel>
                     ))}
                 </Box>
@@ -140,7 +140,9 @@ const CreateConnectionForm = ({ onSubmit }) => {
 };
 
 CreateConnectionForm.propTypes = {
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    connectionName: PropTypes.string,
+    submitName: PropTypes.string
 };
 
 export default CreateConnectionForm;

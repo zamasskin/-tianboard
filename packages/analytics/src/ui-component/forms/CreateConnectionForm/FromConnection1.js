@@ -7,10 +7,10 @@ import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ErrorComponent from 'ui-component/forms/validation/Error';
 
-function FromConnection1({ connectionType, onSubmit }) {
+function FromConnection1({ connectionType, onSubmit, connectionName = '', submitName = 'Подключить' }) {
     const theme = useTheme();
     const initValues = {
-        connectionName: '',
+        connectionName,
         type: connectionType,
         formType: 'file'
     };
@@ -56,7 +56,7 @@ function FromConnection1({ connectionType, onSubmit }) {
                                 variant="contained"
                                 color="secondary"
                             >
-                                Подключить
+                                {submitName}
                             </Button>
                         </AnimateButton>
                     </Box>
@@ -68,7 +68,9 @@ function FromConnection1({ connectionType, onSubmit }) {
 
 FromConnection1.propTypes = {
     connectionType: PropTypes.string,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    connectionName: PropTypes.string,
+    submitName: PropTypes.string
 };
 
 export default FromConnection1;

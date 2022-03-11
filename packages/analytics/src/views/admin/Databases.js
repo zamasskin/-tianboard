@@ -148,12 +148,12 @@ const Databases = () => {
             </MainCard>
             <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
                 <Box sx={style}>
-                    <CreateConnectionForm onSubmit={onSubmitCreate} />
+                    <CreateConnectionForm onSubmit={onSubmitCreate} submitName="Создать" />
                 </Box>
             </Modal>
             <Modal open={openModalUpdate} onClose={() => setOpenModalUpdate(false)}>
                 <Box sx={style}>
-                    <CreateConnectionForm onSubmit={onSubmitUpdate} />
+                    <CreateConnectionForm onSubmit={onSubmitUpdate} submitName="Изменить" />
                 </Box>
             </Modal>
             <Snackbar

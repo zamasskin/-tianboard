@@ -23,16 +23,17 @@ import Error from 'ui-component/forms/validation/Error';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-function FromConnection2({ connectionType, defaultPort, onSubmit }) {
+function FromConnection2({ connectionType, defaultPort, onSubmit, connectionName = '', submitName = 'Подключить' }) {
     const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const initValues = {
-        connectionName: '',
+        connectionName,
         port: '',
         host: '',
         user: '',
         password: '',
+        dbName: '',
         type: connectionType,
         formType: 'default'
     };
@@ -41,6 +42,7 @@ function FromConnection2({ connectionType, defaultPort, onSubmit }) {
         host: Yup.string().required('требуется хост'),
         password: Yup.string().required('требуется пароль'),
         user: Yup.string().required('требуется имя пользователя'),
+        dbName: Yup.string().required('требуется имя База данных'),
         port: Yup.number()
             .typeError('должно быть числом')
             .required('требуется порт')
@@ -125,6 +127,19 @@ function FromConnection2({ connectionType, defaultPort, onSubmit }) {
                         />
                         <Error error={errors.user} touched={touched.user} />
                     </FormControl>
+                    <FormControl fullWidth error={Boolean(touched.dbName && errors.dbName)} sx={{ ...theme.typography.customInput }}>
+                        <InputLabel htmlFor="outlined-adornment-email-register">База данных</InputLabel>
+                        <OutlinedInput
+                            placeholder="root"
+                            type="text"
+                            value={values.dbName}
+                            name="dbName"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                        />
+                        <Error error={errors.dbName} touched={touched.dbName} />
+                    </FormControl>
                     <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
                         <InputLabel htmlFor="outlined-adornment-email-register" name="name">
                             Пароль
@@ -168,7 +183,7 @@ function FromConnection2({ connectionType, defaultPort, onSubmit }) {
                                 variant="contained"
                                 color="secondary"
                             >
-                                Подключить
+                                {submitName}
                             </Button>
                         </AnimateButton>
                     </Box>
@@ -181,7 +196,9 @@ function FromConnection2({ connectionType, defaultPort, onSubmit }) {
 FromConnection2.propTypes = {
     connectionType: PropTypes.string,
     defaultPort: PropTypes.string,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    connectionName: PropTypes.string,
+    submitName: PropTypes.string
 };
 
 export default FromConnection2;

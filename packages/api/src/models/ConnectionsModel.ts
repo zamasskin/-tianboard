@@ -24,6 +24,10 @@ export class ConnectionsModel {
   @Property()
   @Required()
   type: string;
+
+  @Property()
+  @Required()
+  dbName: string;
 }
 
 export class ConnectionsModelByFile {

@@ -7,10 +7,10 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Formik } from 'formik';
 import ErrorComponent from 'ui-component/forms/validation/Error';
 
-function FromConnection3({ connectionType, placeholder, onSubmit }) {
+function FromConnection3({ connectionType, placeholder, onSubmit, connectionName = '', submitName = 'Подключить' }) {
     const theme = useTheme();
     const initValues = {
-        connectionName: '',
+        connectionName,
         clientUrl: '',
         type: connectionType,
         formType: 'url'
@@ -76,7 +76,7 @@ function FromConnection3({ connectionType, placeholder, onSubmit }) {
                                 variant="contained"
                                 color="secondary"
                             >
-                                Подключить
+                                {submitName}
                             </Button>
                         </AnimateButton>
                     </Box>
@@ -89,7 +89,9 @@ function FromConnection3({ connectionType, placeholder, onSubmit }) {
 FromConnection3.propTypes = {
     connectionType: PropTypes.string,
     placeholder: PropTypes.string,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    connectionName: PropTypes.string,
+    submitName: PropTypes.string
 };
 
 export default FromConnection3;
