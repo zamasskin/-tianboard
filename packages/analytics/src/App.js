@@ -20,6 +20,9 @@ import Login from 'views/auth/Login';
 
 import Bootstrap from 'views/Bootstrap';
 
+// account
+const Settings = Loadable(lazy(() => import('views/account/Settings')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -76,6 +79,7 @@ const AppContent = () => {
                     <Route path="/utils/util-shadow" element={<UtilsShadow />} />
                     <Route path="/icons/tabler-icons" element={<UtilsMaterialIcons />} />
                     <Route path="/icons/material-icons" element={<UtilsTablerIcons />} />
+                    <Route path="/account/settings" element={<Settings />} />
                 </Route>
             </Route>
             <Route path="/login" element={<MinimalLayout />}>
