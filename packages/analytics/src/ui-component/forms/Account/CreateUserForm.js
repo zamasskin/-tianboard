@@ -26,7 +26,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import Error from 'ui-component/forms/validation/Error';
 
-const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
+const CreateUserForm = ({ onSubmit, btnName = 'Создать', roles = ['user'] }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -38,7 +38,7 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
         email: '',
         password: '',
         confirmPassword: '',
-        roles: ['user']
+        roles
     };
 
     const validationSchema = yup.object().shape({
@@ -235,7 +235,8 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
 
 CreateUserForm.propTypes = {
     onSubmit: PropTypes.func,
-    btnName: PropTypes.string
+    btnName: PropTypes.string,
+    roles: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default CreateUserForm;

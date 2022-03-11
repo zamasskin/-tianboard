@@ -46,7 +46,7 @@ const CreateUser = () => {
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <CreateUserForm onSubmit={onSubmit} btnName="Давайте начнем" />
+                                        <CreateUserForm onSubmit={onSubmit} btnName="Давайте начнем" roles={['admin']} />
                                     </Grid>
                                 </Grid>
                             </AuthCardWrapper>
