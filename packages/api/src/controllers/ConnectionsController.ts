@@ -65,7 +65,8 @@ export class ConnectionController {
   @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   update(
     @PathParams("id") id: string,
-    @BodyParams() config: ConnectionCreateParams
+    @BodyParams()
+    config: ConnectionsModel | ConnectionsModelByUrl
   ) {
     return this.connectionService.update(id, config);
   }

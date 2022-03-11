@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
-import { MikroOrmRegistry, Orm } from "@tsed/mikro-orm";
+import { MikroOrmRegistry } from "@tsed/mikro-orm";
 
 import {
   uniqueNamesGenerator,
@@ -161,11 +161,38 @@ export class ConnectionService {
     await generator.dropSchema();
     await generator.createSchema();
     await generator.updateSchema();
-    //https://github.com/tsedio/tsed/blob/production/packages/orm/mikro-orm/src/decorators/orm.ts
   }
 
   // Изменение текущего подключения по ид
-  update(id: string, config: ConnectionCreateParams) {}
+  async update(id: string, config: ConnectionsModelByUrl | ConnectionsModel) {
+    if (id === "default") {
+      throw new Forbidden("This connection cannot be deleted.");
+    }
+    const configurations = getConfigurations();
+    const connections = _.get(configurations, "connections");
+    const updateConnections = connections.map((conn) => {
+      if (conn.contextName === id) {
+        if (
+          config instanceof ConnectionsModelByUrl &&
+          config.clientUrl.substr(0, 7) === "file://"
+        ) {
+          return {
+            ...conn,
+            connectionName: config.connectionName,
+          };
+        } else {
+          return {
+            ...config,
+            contextName: conn.contextName,
+          };
+        }
+      }
+      return conn;
+    });
+    const updateConfig = { ...configurations, connections: updateConnections };
+    await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
+    return { result: true };
+  }
 
   async delete(id: string) {
     if (id === "default") {
@@ -194,10 +221,7 @@ export class ConnectionService {
     const updateConnections = connections.filter(
       ({ contextName }: { contextName: string }) => contextName !== id
     );
-
     const updateConfig = { ...configurations, connections: updateConnections };
-
-    console.log(updateConfig);
 
     await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
     return { result: true };
