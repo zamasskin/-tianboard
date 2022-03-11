@@ -12,7 +12,8 @@ import {
     InputAdornment,
     IconButton,
     Box,
-    Button
+    Button,
+    FormHelperText
 } from '@mui/material';
 
 import { Formik } from 'formik';
@@ -70,7 +71,7 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
 
     return (
         <>
-            <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={(form) => onSubmit && onSubmit(form)}>
+            <Formik validationSchema={validationSchema} initialValues={initValues} onSubmit={onSubmit}>
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={matchDownSM ? 0 : 2}>
@@ -205,6 +206,11 @@ const CreateUserForm = ({ onSubmit, btnName = 'Создать' }) => {
                             />
                             <Error error={errors.confirmPassword} touched={touched.confirmPassword} />
                         </FormControl>
+                        {errors.submit && (
+                            <Box sx={{ mt: 3 }}>
+                                <FormHelperText error>{errors.submit}</FormHelperText>
+                            </Box>
+                        )}
                         <Box sx={{ mt: 2 }}>
                             <AnimateButton>
                                 <Button

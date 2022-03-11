@@ -5,8 +5,8 @@ import Loadable from 'ui-component/Loadable';
 import MinimalLayout from 'layout/MinimalLayout';
 
 // login option 3 routing
-const CreateDatabase = Loadable(lazy(() => import('views/bootstrap/CreateDatabase')));
-const CreateUser = Loadable(lazy(() => import('views/bootstrap/CreateUser')));
+const CreateDatabase = Loadable(lazy(() => import('views/Bootstrap/CreateDatabase')));
+const CreateUser = Loadable(lazy(() => import('views/Bootstrap/CreateUser')));
 
 const BootstrapRouter = {
     path: '/',

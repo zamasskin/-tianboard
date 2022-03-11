@@ -4,10 +4,6 @@ import { OnVerify, Protocol } from "@tsed/passport";
 import { AccountModel } from "src/models/AccountModel";
 import { Strategy } from "passport-local";
 import { AccountService } from "src/services/AccountService";
-import bcrypt from "bcrypt";
-import { UserDto } from "src/dto/UserDto";
-
-import { User } from "src/entities/default/User";
 
 @Protocol({
   name: "bootstrap",

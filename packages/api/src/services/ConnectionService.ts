@@ -30,6 +30,7 @@ import {
 } from "src/config/databases";
 import { rootDir } from "src/config";
 import { Options, MikroORM } from "@mikro-orm/core";
+import { User } from "src/entities/default/User";
 
 @Injectable()
 export class ConnectionService {
@@ -166,4 +167,20 @@ export class ConnectionService {
   update(id: number, config: ConnectionCreateParams) {}
 
   delete(id: number) {}
+
+  async isBootstrap() {
+    let userInstalled = false;
+    let connectionInstalled = getConnectionList().length > 0;
+    if (connectionInstalled) {
+      const orm = await this.registry.get("default");
+      if (orm?.em) {
+        const count = await orm.em.fork({}).count(User);
+        userInstalled = count > 0;
+      }
+    }
+    return {
+      connectionInstalled,
+      userInstalled,
+    };
+  }
 }

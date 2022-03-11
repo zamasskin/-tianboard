@@ -1,5 +1,8 @@
+import axios from 'axios';
 import { action, thunk } from 'easy-peasy';
 import AccountService from 'services/AccountService';
+
+import config from 'config';
 
 export default function accountStore() {
     return {
@@ -8,21 +11,18 @@ export default function accountStore() {
             user: false
         },
         setAuth: action((state, auth) => {
-            state.data.auth = auth;
+            state.data.isAuth = auth;
         }),
         setUser: action((state, user) => {
             state.data.user = user;
         }),
         login: thunk(async (actions, payload) => {
-            try {
-                const { email, password } = payload;
-                const response = await AccountService.login(email, password);
-                localStorage.setItem('token', response.data.accessToken);
-                actions.setAuth(true);
-                actions.setUser(response.data.user);
-            } catch (e) {
-                console.log(e);
-            }
+            const { email, password } = payload;
+            const response = await AccountService.login(email, password);
+            localStorage.setItem('token', response.data.accessToken);
+            actions.setAuth(true);
+            actions.setUser(response.data.user);
+            return response.data;
         }),
         logout: thunk(async (actions) => {
             try {
@@ -35,15 +35,11 @@ export default function accountStore() {
             }
         }),
         bootstrap: thunk(async (actions, payload) => {
-            try {
-                const response = await AccountService.bootstrap(payload);
-                localStorage.setItem('token', response.data.accessToken);
-                actions.setAuth(true);
-                actions.setUser(response.data.user);
-                return response.data;
-            } catch (e) {
-                return e?.response?.data;
-            }
+            const response = await AccountService.bootstrap(payload);
+            localStorage.setItem('token', response.data.accessToken);
+            actions.setAuth(true);
+            actions.setUser(response.data.user);
+            return response.data;
         }),
         refresh: thunk(async (actions) => {
             try {
@@ -54,6 +50,18 @@ export default function accountStore() {
             } catch (e) {
                 console.log(e);
                 console.log(e?.response?.data);
+            }
+        }),
+        checkAuth: thunk(async (actions) => {
+            try {
+                const response = await axios.get(`${config.apiUrl}/account/refresh`, { withCredentials: true });
+                localStorage.setItem('token', response.data.accessToken);
+                actions.setAuth(true);
+                actions.setUser(response.data.user);
+                return true;
+            } catch (e) {
+                console.log(e?.response?.data);
+                return false;
             }
         })
     };

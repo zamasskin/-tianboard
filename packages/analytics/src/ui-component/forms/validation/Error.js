@@ -14,7 +14,7 @@ const Error = ({ error, touched }) => {
 
 Error.propTypes = {
     error: PropTypes.string,
-    touched: PropTypes.string
+    touched: PropTypes.bool
 };
 
 export default Error;

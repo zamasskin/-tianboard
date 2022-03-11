@@ -1,26 +1,16 @@
 import { Grid, Stack, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useStoreActions } from 'easy-peasy';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
-import CreateUserForm from 'ui-component/forms/Account/CreateUserForm';
+import LoginForm from 'ui-component/forms/Account/LoginForm';
 
-const CreateUser = () => {
+const Login = () => {
+    const location = useLocation();
     const navigate = useNavigate();
-    const createUser = useStoreActions((actions) => actions.account.bootstrap);
-    const onSubmit = async (form, { setErrors, setSubmitting }) => {
-        try {
-            await createUser(form);
-            navigate('/');
-        } catch (e) {
-            console.log('err');
-            setErrors({ submit: e?.response?.data?.message || e.message });
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    const redirectPath = location.state?.from?.pathname || '/';
+
     return (
         <AuthWrapper1>
             <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
@@ -38,12 +28,8 @@ const CreateUser = () => {
                                         <Grid container alignItems="center" justifyContent="center">
                                             <Grid item>
                                                 <Stack alignItems="center" justifyContent="center" spacing={1}>
-                                                    <Typography variant="h3">Создание администратора</Typography>
-                                                    <Typography
-                                                        variant="caption"
-                                                        fontSize="16px"
-                                                        // textAlign={matchDownSM ? 'center' : 'inherit'}
-                                                    >
+                                                    <Typography variant="h3">Авторизация</Typography>
+                                                    <Typography variant="caption" fontSize="16px">
                                                         Введите свои учетные данные, чтобы продолжить
                                                     </Typography>
                                                 </Stack>
@@ -51,7 +37,7 @@ const CreateUser = () => {
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <CreateUserForm onSubmit={onSubmit} btnName="Давайте начнем" />
+                                        <LoginForm onLogin={() => navigate(redirectPath)} />
                                     </Grid>
                                 </Grid>
                             </AuthCardWrapper>
@@ -63,4 +49,4 @@ const CreateUser = () => {
     );
 };
 
-export default CreateUser;
+export default Login;

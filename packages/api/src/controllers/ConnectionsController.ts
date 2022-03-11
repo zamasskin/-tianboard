@@ -69,6 +69,11 @@ export class ConnectionController {
     return this.connectionService.delete(id);
   }
 
+  @Get("/bootstrap")
+  isBootstrap() {
+    return this.connectionService.isBootstrap();
+  }
+
   @UseAuth(BootstrapCheckConnectionsMiddleware)
   @Post("/bootstrap")
   bootstrap(@BodyParams(ConnectionsModel) config: ConnectionsModel) {
