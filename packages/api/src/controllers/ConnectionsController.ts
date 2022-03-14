@@ -60,6 +60,13 @@ export class ConnectionController {
     return this.connectionService.apply(contextName, params);
   }
 
+  @Get("/connection/:contextName")
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  findOne(@PathParams("contextName") contextName: string) {
+    return this.connectionService.findOne(contextName);
+  }
+
   @Put("/:id")
   @Auth()
   @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })

@@ -106,6 +106,17 @@ export class ConnectionService {
     });
   }
 
+  findOne(contextName: string) {
+    const connections = getConnectionList();
+    const connection = connections.find(
+      (conn) => conn.contextName === contextName
+    );
+    if (!connection) {
+      return new NotFound("connection not found");
+    }
+    return connection;
+  }
+
   createByUrl(config: ConnectionsModelByUrl) {
     return this.saveConnections(config);
   }
@@ -125,9 +136,6 @@ export class ConnectionService {
         ...config,
         contextName,
         entities: [`./src/entities/${contextName}/*.ts`],
-        ...(connections.length > 0
-          ? { discovery: { warnWhenNoEntities: false } }
-          : {}),
       },
     ];
 

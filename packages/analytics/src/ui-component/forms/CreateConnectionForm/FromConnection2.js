@@ -23,7 +23,7 @@ import Error from 'ui-component/forms/validation/Error';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-function FromConnection2({ connectionType, defaultPort, onSubmit, submitName = 'Подключить', params = {} }) {
+function FromConnection2({ connectionType, defaultPort, onSubmit, submitName = 'Подключить', cancelBtn = false, onCancel, params = {} }) {
     const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -172,21 +172,45 @@ function FromConnection2({ connectionType, defaultPort, onSubmit, submitName = '
                             <FormHelperText error>{errors.submit}</FormHelperText>
                         </Box>
                     )}
-                    <Box sx={{ mt: 2 }}>
-                        <AnimateButton>
-                            <Button
-                                disableElevation
-                                disabled={isSubmitting}
-                                fullWidth
-                                size="large"
-                                type="submit"
-                                variant="contained"
-                                color="secondary"
-                            >
-                                {submitName}
-                            </Button>
-                        </AnimateButton>
-                    </Box>
+                    <Grid container spacing={matchDownSM ? 0 : 2}>
+                        {cancelBtn && (
+                            <Grid item xs={12} sm={6}>
+                                <Box sx={{ mt: 2 }}>
+                                    <AnimateButton>
+                                        <Button
+                                            disableElevation
+                                            disabled={isSubmitting}
+                                            fullWidth
+                                            size="large"
+                                            type="button"
+                                            onClick={onCancel}
+                                            variant="contained"
+                                            color="common"
+                                        >
+                                            Отмена
+                                        </Button>
+                                    </AnimateButton>
+                                </Box>
+                            </Grid>
+                        )}
+                        <Grid item xs={12} sm={cancelBtn ? 6 : 12}>
+                            <Box sx={{ mt: 2 }}>
+                                <AnimateButton>
+                                    <Button
+                                        disableElevation
+                                        disabled={isSubmitting}
+                                        fullWidth
+                                        size="large"
+                                        type="submit"
+                                        variant="contained"
+                                        color="secondary"
+                                    >
+                                        {submitName}
+                                    </Button>
+                                </AnimateButton>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </form>
             )}
         </Formik>
@@ -198,7 +222,9 @@ FromConnection2.propTypes = {
     defaultPort: PropTypes.string,
     onSubmit: PropTypes.func,
     submitName: PropTypes.string,
-    params: PropTypes.object
+    params: PropTypes.object,
+    cancelBtn: PropTypes.bool,
+    onCancel: PropTypes.func
 };
 
 export default FromConnection2;

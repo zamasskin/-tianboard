@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { useState } from 'react';
 import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Alert, Modal, Box, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Snackbar } from '@mui/material';
 import { useStoreActions } from 'easy-peasy';
 
@@ -26,6 +27,8 @@ const style = {
 };
 
 const Databases = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const checkAuth = useStoreActions((actions) => actions.account.checkAuth);
     const [connections, setConnections] = useState([]);
     const [error, setError] = useState(false);
@@ -37,9 +40,7 @@ const Databases = () => {
 
     const [open, setOpen] = useState(false);
     const [openModalCreate, setOpenModalCreate] = useState(false);
-    const [openModalUpdate, setOpenModalUpdate] = useState(false);
     const [selectionModel, setSelectionModel] = useState([]);
-    const [updateParams, setUpdateParams] = useState(undefined);
 
     async function loadDatabase() {
         try {
@@ -74,15 +75,8 @@ const Databases = () => {
         }
     };
 
-    const onSubmitUpdate = async (form, { setErrors, setSubmitting }) => {
-        console.log(form);
-    };
-
     const setSelect = (newSelection) => {
-        const id = _.first(newSelection);
-        const updateParams = connections.find((conn) => conn.id === id);
         setSelectionModel(newSelection);
-        setUpdateParams(updateParams);
     };
 
     const deleteConnection = async () => {
@@ -106,6 +100,11 @@ const Databases = () => {
         setOpen(false);
     };
 
+    const openEdit = () => {
+        const [id] = selectionModel;
+        navigate([location.pathname, id].join('/'));
+    };
+
     return (
         <>
             <MainCard>
@@ -123,7 +122,7 @@ const Databases = () => {
                                     </Button>
                                     {selectionModel.length > 0 && _.first(selectionModel) !== 'default' && (
                                         <>
-                                            <Button color="primary" startIcon={<EditIcon />} onClick={() => setOpenModalUpdate(true)}>
+                                            <Button color="primary" startIcon={<EditIcon />} onClick={openEdit}>
                                                 Редактировать
                                             </Button>
                                             <Button color="primary" startIcon={<DeleteForeverIcon />} onClick={handleClickOpen}>
@@ -157,11 +156,6 @@ const Databases = () => {
             <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
                 <Box sx={style}>
                     <CreateConnectionForm onSubmit={onSubmitCreate} submitName="Создать" />
-                </Box>
-            </Modal>
-            <Modal open={openModalUpdate} onClose={() => setOpenModalUpdate(false)}>
-                <Box sx={style}>
-                    <CreateConnectionForm onSubmit={onSubmitUpdate} submitName="Изменить" params={updateParams} />
                 </Box>
             </Modal>
             <Snackbar

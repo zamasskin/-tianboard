@@ -36,6 +36,14 @@ class ConnectionService {
     static async createUrl(params) {
         return $api.post('/connections/create/by-url', params);
     }
+
+    static async findOne(contextName) {
+        return $api.get(`/connections/connection/${contextName}`);
+    }
+
+    static async update(contextName, updateConfig) {
+        return $api.put(`/connections/${contextName}`, updateConfig);
+    }
 }
 
 export default ConnectionService;

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 
 // material-ui
@@ -15,6 +15,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem = ({ item, level }) => {
+    const { pathname } = useLocation();
     const openMenu = useStoreActions((actions) => actions.theme.openMenu);
     const setMenu = useStoreActions((actions) => actions.theme.setMenu);
     const theme = useTheme();
@@ -56,15 +57,21 @@ const NavItem = ({ item, level }) => {
 
     // active menu item on page load
     useEffect(() => {
-        const currentIndex = document.location.pathname
-            .toString()
-            .split('/')
-            .findIndex((id) => id === item.id);
-        if (currentIndex > -1) {
+        let isOpened;
+        if (item.type === 'group') {
+            isOpened = false;
+        } else if (item?.whichIncludes === true) {
+            isOpened = pathname.substring(0, item.url.length) === item.url;
+        } else if (item?.children && item?.children?.length) {
+            isOpened = pathname.substring(0, item.url.length) === item.url;
+        } else {
+            isOpened = pathname === item.url;
+        }
+
+        if (isOpened) {
             openMenu(item.id);
         }
-        // eslint-disable-next-line
-    }, []);
+    }, [pathname, item, openMenu]);
 
     return (
         <ListItemButton

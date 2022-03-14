@@ -49,7 +49,7 @@ function PostgresqlForm(props) {
     );
 }
 
-const dataBases = [
+export const databases = [
     {
         label: 'Sqlite',
         id: 'sqlite',
@@ -113,7 +113,7 @@ TabPanel.propTypes = {
 };
 
 const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'Подключить', params = {} }) => {
-    const key = Number(_.findKey(dataBases, { id: params?.type })) || 0;
+    const key = Number(_.findKey(databases, { id: params?.type })) || 0;
     const [value, setValue] = React.useState(key);
 
     const handleChange = (event, newValue) => {
@@ -126,12 +126,12 @@ const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'П�
                 <Box>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable">
-                            {dataBases.map((db, i) => (
+                            {databases.map((db, i) => (
                                 <Tab key={i} label={db.label} {...a11yProps(i)} />
                             ))}
                         </Tabs>
                     </Box>
-                    {dataBases.map((db, i) => (
+                    {databases.map((db, i) => (
                         <TabPanel key={i} value={value} index={i} title={db.title}>
                             {React.createElement(db.component, { onSubmit, submitName, params })}
                         </TabPanel>

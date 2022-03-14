@@ -11,7 +11,8 @@ const admin = {
             id: 'admin-database',
             title: 'Подключения',
             type: 'item',
-            url: '/admin/admin-database',
+            url: '/admin/database',
+            whichIncludes: true,
             icon: icons.IconDatabase,
             breadcrumbs: false
         },

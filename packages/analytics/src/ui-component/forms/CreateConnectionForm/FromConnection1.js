@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, OutlinedInput, Button, Box, FormHelperText } from '@mui/material';
+import { FormControl, InputLabel, OutlinedInput, Button, Box, FormHelperText, Grid, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
@@ -7,8 +7,9 @@ import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import ErrorComponent from 'ui-component/forms/validation/Error';
 
-function FromConnection1({ connectionType, onSubmit, submitName = 'Подключить', params = {} }) {
+function FromConnection1({ connectionType, onSubmit, submitName = 'Подключить', params = {}, cancelBtn = false, onCancel }) {
     const theme = useTheme();
+    const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const initValues = {
         connectionName: params.connectionName || '',
         type: connectionType,
@@ -45,21 +46,45 @@ function FromConnection1({ connectionType, onSubmit, submitName = 'Подклю�
                             <FormHelperText error>{errors.submit}</FormHelperText>
                         </Box>
                     )}
-                    <Box sx={{ mt: 2 }}>
-                        <AnimateButton>
-                            <Button
-                                disableElevation
-                                disabled={isSubmitting}
-                                fullWidth
-                                size="large"
-                                type="submit"
-                                variant="contained"
-                                color="secondary"
-                            >
-                                {submitName}
-                            </Button>
-                        </AnimateButton>
-                    </Box>
+                    <Grid container spacing={matchDownSM ? 0 : 2}>
+                        {cancelBtn && (
+                            <Grid item xs={12} sm={6}>
+                                <Box sx={{ mt: 2 }}>
+                                    <AnimateButton>
+                                        <Button
+                                            disableElevation
+                                            disabled={isSubmitting}
+                                            fullWidth
+                                            size="large"
+                                            type="button"
+                                            onClick={onCancel}
+                                            variant="contained"
+                                            color="common"
+                                        >
+                                            Отмена
+                                        </Button>
+                                    </AnimateButton>
+                                </Box>
+                            </Grid>
+                        )}
+                        <Grid item xs={12} sm={cancelBtn ? 6 : 12}>
+                            <Box sx={{ mt: 2 }}>
+                                <AnimateButton>
+                                    <Button
+                                        disableElevation
+                                        disabled={isSubmitting}
+                                        fullWidth
+                                        size="large"
+                                        type="submit"
+                                        variant="contained"
+                                        color="secondary"
+                                    >
+                                        {submitName}
+                                    </Button>
+                                </AnimateButton>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </form>
             )}
         </Formik>
@@ -70,7 +95,9 @@ FromConnection1.propTypes = {
     connectionType: PropTypes.string,
     onSubmit: PropTypes.func,
     submitName: PropTypes.string,
-    params: PropTypes.object
+    params: PropTypes.object,
+    cancelBtn: PropTypes.bool,
+    onCancel: PropTypes.func
 };
 
 export default FromConnection1;

@@ -13,6 +13,9 @@ export function getConnections(): Options[] {
   return connections.map((connection) => ({
     ..._.omit(connection, "connectionName"),
     allowGlobalContext: true,
+    ...(connection.contextName === "default"
+      ? {}
+      : { discovery: { warnWhenNoEntities: false } }),
   })) as Options[];
 }
 
