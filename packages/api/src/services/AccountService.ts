@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@tsed/di";
 import { Orm } from "@tsed/mikro-orm";
-import { FilterQuery, MikroORM } from "@mikro-orm/core";
+import { FilterQuery, FindOptions, MikroORM } from "@mikro-orm/core";
 import { AccountModel } from "src/models/AccountModel";
 import { User } from "src/entities/default/User";
 import * as jwt from "jsonwebtoken";
@@ -9,6 +9,8 @@ import { Forbidden, NotFound, Unauthorized } from "@tsed/exceptions";
 import { UserDto } from "src/dto/UserDto";
 import bcrypt from "bcrypt";
 import { TokenService } from "./TokenService";
+import { FindAccountModel } from "src/models/FindAccountModel";
+import { FindPaginationModel } from "src/models/FindPaginationModel";
 
 @Injectable()
 export class AccountService {
@@ -46,6 +48,20 @@ export class AccountService {
   findOne(where: FilterQuery<User>): Promise<User | null> {
     const userRepository = this.orm.em.getRepository(User);
     return userRepository.findOne(where);
+  }
+
+  async findMany(model: FindPaginationModel<User>) {
+    const userRepository = this.orm.em.getRepository(User);
+    const [data, count] = await Promise.all([
+      userRepository.find(model.where, model.options),
+      this.count(),
+    ]);
+    return {
+      data,
+      count,
+      perPage: model.perPage,
+      currentPage: model.currentPage,
+    };
   }
 
   count() {

@@ -112,7 +112,7 @@ TabPanel.propTypes = {
     title: PropTypes.string
 };
 
-const CreateConnectionForm = ({ onSubmit, connectionName = '', submitName = 'Подключить', params = {} }) => {
+const CreateConnectionForm = ({ onSubmit, submitName = 'Подключить', params = {} }) => {
     const key = Number(_.findKey(databases, { id: params?.type })) || 0;
     const [value, setValue] = React.useState(key);
 

@@ -37,7 +37,7 @@ const DashboardEdit = Loadable(lazy(() => import('views/dashboard/Edit')));
 // admin
 const Databases = Loadable(lazy(() => import('views/admin/Databases/index')));
 const DatabaseEdit = Loadable(lazy(() => import('views/admin/Databases/DatabaseEdit')));
-const Users = Loadable(lazy(() => import('views/admin/Users')));
+const Users = Loadable(lazy(() => import('views/admin/Users/index')));
 
 // ==============================|| APP ||============================== //
 

@@ -1,6 +1,6 @@
 import { BodyParams, Cookies, Req, Res, UseAuth } from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { Get, Post } from "@tsed/schema";
+import { GenericOf, Get, Post } from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
 import { AccountModel, UserRole } from "src/models/AccountModel";
 import { AccountService } from "src/services/AccountService";
@@ -9,6 +9,9 @@ import { User } from "src/entities/default/User";
 import { UserDto } from "src/dto/UserDto";
 import { Auth } from "src/decorators/Auth";
 import { RefreshTokenModel } from "src/models/RefreshTokenModel";
+import { FindAccountModel } from "src/models/FindAccountModel";
+import { FindPaginationModel } from "src/models/FindPaginationModel";
+import { FilterQuery } from "@mikro-orm/core";
 @Controller("/account")
 @Scope(ProviderScope.SINGLETON)
 export class AccountController {
@@ -18,6 +21,17 @@ export class AccountController {
   @Get("/")
   get() {
     return "hello";
+  }
+
+  @Post("/list")
+  // @Auth()
+  // @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  findMany(
+    @BodyParams(FindPaginationModel)
+    @GenericOf(User)
+    model: FindPaginationModel<User>
+  ) {
+    return this.service.findMany(model);
   }
 
   @Post("/signup")

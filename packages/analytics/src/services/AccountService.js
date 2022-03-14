@@ -20,6 +20,10 @@ class AccountService {
     static async create(account) {
         return $api.post('/account/create', account);
     }
+
+    static async findMany(params) {
+        return $api.post('/account/list', params);
+    }
 }
 
 export default AccountService;
