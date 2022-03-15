@@ -13,11 +13,7 @@ import {
     IconButton,
     Box,
     Button,
-    FormHelperText,
-    Select,
-    Chip,
-    MenuItem,
-    Alert
+    FormHelperText
 } from '@mui/material';
 
 import { Formik } from 'formik';
@@ -29,35 +25,19 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import Error from 'ui-component/forms/validation/Error';
-import AccountService from 'services/AccountService';
 
-const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles = ['user'], cancelBtn = false }) => {
+const RegistrationForm = ({ onSubmit, btnName = 'Создать', roles = ['user'] }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     const [showPassword, setShowPassword] = useState(false);
-    const [userRoles, setUserRoles] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
-
-    const loadRoles = async () => {
-        setLoading(true);
-        try {
-            const response = await AccountService.roles();
-            setUserRoles(response.data);
-        } catch (e) {
-            setError(e?.response?.data?.message || e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    useState(() => loadRoles(), []);
 
     const initValues = {
         firstName: '',
         secondName: '',
         email: '',
         password: '',
+        confirmPassword: '',
         roles
     };
 
@@ -66,7 +46,10 @@ const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles 
         secondName: yup.string().max(255).required('требуется фамилия'),
         email: yup.string().email('Должен быть действующий адрес электронной почты').max(255).required('требуется Email'),
         password: yup.string().max(255).required('требуется пароль'),
-        roles: yup.array().of(yup.string()).min(1, 'Должна быть выбрана хотя-бы одна группа').required('Требуется группа')
+        confirmPassword: yup
+            .string()
+            .required('требуется подтверждение пароля')
+            .oneOf([yup.ref('password'), null], 'Пароли должны совпадать')
     });
 
     const [strength, setStrength] = useState(0);
@@ -85,14 +68,6 @@ const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
-    if (error) {
-        return <Alert severity="error">{error}</Alert>;
-    }
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <>
@@ -182,33 +157,6 @@ const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles 
                             />
                             <Error error={errors.password} touched={touched.password} />
                         </FormControl>
-                        <FormControl fullWidth sx={{ ...theme.typography.customSelect }} error={Boolean(touched.roles && errors.roles)}>
-                            <InputLabel id="demo-multiple-chip-label">Группа пользователя</InputLabel>
-                            <Select
-                                labelId="demo-multiple-chip-label"
-                                id="demo-multiple-chip"
-                                multiple
-                                name="roles"
-                                value={values.roles}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                input={<OutlinedInput id="select-multiple-chip" label="Группа пользователя" />}
-                                renderValue={(selected) => (
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {selected.map((value) => (
-                                            <Chip key={value} label={value} />
-                                        ))}
-                                    </Box>
-                                )}
-                            >
-                                {userRoles.map(({ name, value }) => (
-                                    <MenuItem key={value} value={value}>
-                                        {name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                            <Error error={errors.roles} touched={touched.roles} />
-                        </FormControl>
                         {strength !== 0 && (
                             <FormControl fullWidth>
                                 <Box sx={{ mb: 2 }}>
@@ -228,50 +176,56 @@ const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles 
                                 </Box>
                             </FormControl>
                         )}
+                        <FormControl
+                            fullWidth
+                            sx={{ ...theme.typography.customInput }}
+                            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                        >
+                            <InputLabel htmlFor="outlined-adornment-password-register">Подтверждение пароля</InputLabel>
+                            <OutlinedInput
+                                type={showPassword ? 'text' : 'password'}
+                                value={values.confirmPassword}
+                                name="confirmPassword"
+                                label="Пароль"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                            size="large"
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                inputProps={{}}
+                            />
+                            <Error error={errors.confirmPassword} touched={touched.confirmPassword} />
+                        </FormControl>
                         {errors.submit && (
                             <Box sx={{ mt: 3 }}>
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-                        <Grid container spacing={matchDownSM ? 0 : 2}>
-                            {cancelBtn && (
-                                <Grid item xs={12} sm={6}>
-                                    <Box sx={{ mt: 2 }}>
-                                        <AnimateButton>
-                                            <Button
-                                                disableElevation
-                                                disabled={isSubmitting}
-                                                fullWidth
-                                                size="large"
-                                                type="button"
-                                                onClick={onCancel}
-                                                variant="contained"
-                                                color="common"
-                                            >
-                                                Отмена
-                                            </Button>
-                                        </AnimateButton>
-                                    </Box>
-                                </Grid>
-                            )}
-                            <Grid item xs={12} sm={cancelBtn ? 6 : 12}>
-                                <Box sx={{ mt: 2 }}>
-                                    <AnimateButton>
-                                        <Button
-                                            disableElevation
-                                            disabled={isSubmitting}
-                                            fullWidth
-                                            size="large"
-                                            type="submit"
-                                            variant="contained"
-                                            color="secondary"
-                                        >
-                                            {btnName}
-                                        </Button>
-                                    </AnimateButton>
-                                </Box>
-                            </Grid>
-                        </Grid>
+                        <Box sx={{ mt: 2 }}>
+                            <AnimateButton>
+                                <Button
+                                    disableElevation
+                                    disabled={isSubmitting}
+                                    fullWidth
+                                    size="large"
+                                    type="submit"
+                                    variant="contained"
+                                    color="secondary"
+                                >
+                                    {btnName}
+                                </Button>
+                            </AnimateButton>
+                        </Box>
                     </form>
                 )}
             </Formik>
@@ -279,12 +233,10 @@ const CreateUserForm = ({ onSubmit, onCancel, btnName = 'Создать', roles 
     );
 };
 
-CreateUserForm.propTypes = {
+RegistrationForm.propTypes = {
     onSubmit: PropTypes.func,
     btnName: PropTypes.string,
-    roles: PropTypes.arrayOf(PropTypes.string),
-    cancelBtn: PropTypes.bool,
-    onCancel: PropTypes.func
+    roles: PropTypes.arrayOf(PropTypes.string)
 };
 
-export default CreateUserForm;
+export default RegistrationForm;

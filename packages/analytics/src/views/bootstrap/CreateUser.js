@@ -5,7 +5,7 @@ import { useStoreActions } from 'easy-peasy';
 import AuthCardWrapper from 'views/pages/authentication/AuthCardWrapper';
 import AuthWrapper1 from 'views/pages/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
-import CreateUserForm from 'ui-component/forms/Account/CreateUserForm';
+import CreateUserForm from 'ui-component/forms/Account/RegistrationForm';
 
 const CreateUser = () => {
     const createUser = useStoreActions((actions) => actions.account.bootstrap);

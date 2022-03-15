@@ -1,4 +1,7 @@
+import axios from 'axios';
 import $api from '../http';
+
+import config from '../config';
 
 class AccountService {
     static async login(email, password) {
@@ -23,6 +26,10 @@ class AccountService {
 
     static async findMany(params) {
         return $api.post('/account/list', params);
+    }
+
+    static async roles() {
+        return axios.get(`${config.apiUrl}/account/roles`);
     }
 }
 

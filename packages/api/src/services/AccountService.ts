@@ -68,6 +68,14 @@ export class AccountService {
     return this.orm.em.fork({}).count(User);
   }
 
+  roles() {
+    return [
+      { value: "user", name: "Пользователь" },
+      { value: "moderator", name: "Модератор" },
+      { value: "admin", name: "Администратор" },
+    ];
+  }
+
   async response(user: User) {
     const token = this.tokenService.generateTokens(new UserDto(user));
     await this.tokenService.saveToken(user, token.refreshToken);

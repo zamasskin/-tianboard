@@ -23,6 +23,11 @@ export class AccountController {
     return "hello";
   }
 
+  @Get("/roles")
+  roles() {
+    return this.service.roles();
+  }
+
   @Post("/list")
   // @Auth()
   // @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
