@@ -20,7 +20,7 @@ const admin = {
             id: 'admin-users',
             title: 'Пользователи',
             type: 'item',
-            url: '/admin/admin-users',
+            url: '/admin/users',
             icon: icons.IconUser,
             breadcrumbs: false
         }

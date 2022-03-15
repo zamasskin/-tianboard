@@ -38,6 +38,7 @@ const DashboardEdit = Loadable(lazy(() => import('views/dashboard/Edit')));
 const Databases = Loadable(lazy(() => import('views/admin/Databases/index')));
 const DatabaseEdit = Loadable(lazy(() => import('views/admin/Databases/DatabaseEdit')));
 const Users = Loadable(lazy(() => import('views/admin/Users/index')));
+const UserEdit = Loadable(lazy(() => import('views/admin/Users/UserEdit')));
 
 // ==============================|| APP ||============================== //
 
@@ -85,12 +86,16 @@ const AppContent = () => {
                     <Route path="/icons/tabler-icons" element={<UtilsMaterialIcons />} />
                     <Route path="/icons/material-icons" element={<UtilsTablerIcons />} />
                     <Route path="/account/settings" element={<Settings />} />
-                    <Route path="/admin/database">
-                        <Route path="" element={<Databases />} />
-                        <Route path=":databaseId" element={<DatabaseEdit />} />
+                    <Route path="/admin">
+                        <Route path="/database">
+                            <Route path="" element={<Databases />} />
+                            <Route path=":databaseId" element={<DatabaseEdit />} />
+                        </Route>
+                        <Route path="/users">
+                            <Route path="" element={<Users />} />
+                            <Route path=":userId" element={<UserEdit />} />
+                        </Route>
                     </Route>
-
-                    <Route path="/admin/admin-users" element={<Users />} />
                 </Route>
             </Route>
             <Route path="/login" element={<MinimalLayout />}>

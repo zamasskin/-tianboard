@@ -68,6 +68,12 @@ export class AccountService {
     return this.orm.em.fork({}).count(User);
   }
 
+  async delete(id: number) {
+    const user = await this.findOne({ id });
+    const userRepository = this.orm.em.getRepository(User);
+    return userRepository.removeAndFlush([user]);
+  }
+
   roles() {
     return [
       { value: "user", name: "Пользователь" },

@@ -31,6 +31,10 @@ class AccountService {
     static async roles() {
         return axios.get(`${config.apiUrl}/account/roles`);
     }
+
+    static async delete(id) {
+        return $api.delete(`/account/${id}`);
+    }
 }
 
 export default AccountService;

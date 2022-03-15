@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Button, Modal, Box } from '@mui/material';
-import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import _ from 'lodash';
 import { useStoreActions } from 'easy-peasy';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import { Button, Modal, Box, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Snackbar, Alert } from '@mui/material';
 
 import MainCard from 'ui-component/cards/MainCard';
 import AccountService from 'services/AccountService';
 import CreateUserForm from 'ui-component/forms/Account/CreateUserForm';
 
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const style = {
     position: 'absolute',
@@ -22,6 +26,8 @@ const style = {
 };
 
 const Users = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const checkAuth = useStoreActions((actions) => actions.account.checkAuth);
     const [rowCount, setRowCount] = useState(1);
     const [rows, setRows] = useState([]);
@@ -31,6 +37,7 @@ const Users = () => {
     const [pageSize, setPageSize] = useState(50);
     const [selectionModel, setSelectionModel] = useState([]);
     const [openModalCreate, setOpenModalCreate] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const columns = [
         { field: 'id', headerName: 'Ид', width: 40 },
@@ -42,6 +49,7 @@ const Users = () => {
     ];
 
     const loadUsers = async () => {
+        setError(false);
         setLoading(true);
         try {
             await checkAuth();
@@ -60,6 +68,25 @@ const Users = () => {
         }
     };
 
+    const openEdit = () => {
+        const [id] = selectionModel;
+        navigate([location.pathname, id].join('/'));
+    };
+
+    const deleteUser = async () => {
+        setError(false);
+        setOpen(false);
+        try {
+            await checkAuth();
+            const id = _.first(selectionModel);
+            await AccountService.delete(id);
+            await loadUsers();
+        } catch (e) {
+            console.log(e?.response?.data?.message || e.message);
+            setError(e?.response?.data?.message || e.message);
+        }
+    };
+
     useEffect(() => {
         loadUsers();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,6 +97,16 @@ const Users = () => {
             <Button color="primary" startIcon={<AddIcon />} onClick={() => setOpenModalCreate(true)}>
                 Создать
             </Button>
+            {selectionModel.length > 0 && (
+                <>
+                    <Button color="primary" startIcon={<EditIcon />} onClick={openEdit}>
+                        Редактировать
+                    </Button>
+                    <Button color="primary" startIcon={<DeleteForeverIcon />} onClick={() => setOpen(true)}>
+                        Удалить
+                    </Button>
+                </>
+            )}
         </GridToolbarContainer>
     );
 
@@ -98,7 +135,6 @@ const Users = () => {
                         page={page}
                         rowsPerPageOptions={[20, 50, 100, 500]}
                         onPageChange={(nextPage) => setPage(nextPage)}
-                        error={error}
                         pageSize={pageSize}
                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                         onSelectionModelChange={setSelectionModel}
@@ -112,6 +148,26 @@ const Users = () => {
                     <CreateUserForm btnName="Создать" roles={[]} cancelBtn onSubmit={onSubmit} onCancel={() => setOpenModalCreate(false)} />
                 </Box>
             </Modal>
+            <Dialog open={open} keepMounted onClose={() => setOpen(false)} aria-describedby="alert-dialog-slide-description">
+                <DialogTitle>Вы уверены?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">Удаление подключения не затрагивает данные!</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>Отмена</Button>
+                    <Button onClick={deleteUser}>Удалить</Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar
+                open={!!error}
+                autoHideDuration={6000}
+                onClose={() => setError(false)}
+                // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert onClose={() => setError(false)} severity="error" sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

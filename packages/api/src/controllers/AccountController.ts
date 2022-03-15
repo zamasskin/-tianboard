@@ -1,6 +1,13 @@
-import { BodyParams, Cookies, Req, Res, UseAuth } from "@tsed/common";
+import {
+  BodyParams,
+  Cookies,
+  PathParams,
+  Req,
+  Res,
+  UseAuth,
+} from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { GenericOf, Get, Post } from "@tsed/schema";
+import { Delete, GenericOf, Get, Post } from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
 import { AccountModel, UserRole } from "src/models/AccountModel";
 import { AccountService } from "src/services/AccountService";
@@ -117,5 +124,12 @@ export class AccountController {
       httpOnly: true,
     });
     return userData;
+  }
+
+  @Delete("/:id")
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  delete(@PathParams("id") id: number) {
+    return this.service.delete(id);
   }
 }
