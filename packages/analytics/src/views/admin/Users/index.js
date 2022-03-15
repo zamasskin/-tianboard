@@ -140,6 +140,7 @@ const Users = () => {
                         onSelectionModelChange={setSelectionModel}
                         selectionModel={selectionModel}
                         components={{ Toolbar }}
+                        onCellDoubleClick={openEdit}
                     />
                 </div>
             </MainCard>
