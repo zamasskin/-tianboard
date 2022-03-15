@@ -7,16 +7,19 @@ import {
   UseAuth,
 } from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { Delete, GenericOf, Get, Post } from "@tsed/schema";
+import { Delete, GenericOf, Get, Post, Put } from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
-import { AccountModel, UserRole } from "src/models/AccountModel";
+import {
+  AccountModel,
+  UpdateAccountModel,
+  UserRole,
+} from "src/models/AccountModel";
 import { AccountService } from "src/services/AccountService";
 import { Authenticate } from "@tsed/passport";
 import { User } from "src/entities/default/User";
 import { UserDto } from "src/dto/UserDto";
 import { Auth } from "src/decorators/Auth";
 import { RefreshTokenModel } from "src/models/RefreshTokenModel";
-import { FindAccountModel } from "src/models/FindAccountModel";
 import { FindPaginationModel } from "src/models/FindPaginationModel";
 import { FilterQuery } from "@mikro-orm/core";
 @Controller("/account")
@@ -33,6 +36,13 @@ export class AccountController {
   @Get("/roles")
   roles() {
     return this.service.roles();
+  }
+
+  @Get("/detail/:id")
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  findAccount(@PathParams("id") id: number) {
+    return this.service.findAccount(id);
   }
 
   @Post("/list")
@@ -131,5 +141,16 @@ export class AccountController {
   @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   delete(@PathParams("id") id: number) {
     return this.service.delete(id);
+  }
+
+  @Put("/:id")
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  update(
+    @PathParams("id") id: number,
+    @BodyParams(UpdateAccountModel)
+    updateParams: UpdateAccountModel
+  ) {
+    return this.service.update(id, updateParams);
   }
 }

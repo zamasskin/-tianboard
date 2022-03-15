@@ -67,7 +67,7 @@ const MainLayout = () => {
     const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'));
     const setMenu = useStoreActions((actions) => actions.theme.setMenu);
     const user = useStoreState((state) => state.account.data.user);
-    const navigation = createNavigation(user.groups);
+    const navigation = createNavigation(user.roles);
 
     // Handle left drawer
     const leftDrawerOpened = useStoreState((state) => state.theme.data.opened);

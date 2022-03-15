@@ -35,6 +35,14 @@ class AccountService {
     static async delete(id) {
         return $api.delete(`/account/${id}`);
     }
+
+    static async detail(id) {
+        return $api.get(`/account/detail/${id}`);
+    }
+
+    static async update(id, updateParams) {
+        return $api.put(`/account/${id}`, updateParams);
+    }
 }
 
 export default AccountService;

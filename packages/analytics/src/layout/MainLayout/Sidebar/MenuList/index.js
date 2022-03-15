@@ -10,7 +10,7 @@ import { createNavigation } from 'menu-items';
 
 const MenuList = () => {
     const user = useStoreState((state) => state.account.data.user);
-    const menuItem = createNavigation(user.groups);
+    const menuItem = createNavigation(user.roles);
     const navItems = menuItem.items.map((item) => {
         switch (item.type) {
             case 'group':
