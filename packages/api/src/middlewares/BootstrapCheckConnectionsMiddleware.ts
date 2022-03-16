@@ -1,6 +1,6 @@
 import { Middleware, MiddlewareMethods } from "@tsed/common";
 import { Forbidden } from "@tsed/exceptions";
-import { getConnections } from "src/config/databases";
+import { getConnections } from "src/config/yaml";
 
 @Middleware()
 export class BootstrapCheckConnectionsMiddleware implements MiddlewareMethods {

@@ -2,12 +2,22 @@ import {
   BodyParams,
   Cookies,
   PathParams,
+  QueryParams,
   Req,
   Res,
+  UseAfter,
   UseAuth,
 } from "@tsed/common";
 import { Controller, Inject, ProviderScope, Scope } from "@tsed/di";
-import { Delete, GenericOf, Get, Post, Put } from "@tsed/schema";
+import {
+  Delete,
+  email,
+  GenericOf,
+  Get,
+  Post,
+  Put,
+  Redirect,
+} from "@tsed/schema";
 import { CheckRoleMiddleware } from "src/middlewares/CheckRoleMiddleware";
 import {
   AccountModel,
@@ -22,6 +32,13 @@ import { Auth } from "src/decorators/Auth";
 import { RefreshTokenModel } from "src/models/RefreshTokenModel";
 import { FindPaginationModel } from "src/models/FindPaginationModel";
 import { FilterQuery } from "@mikro-orm/core";
+import { publicUrl } from "src/config/env";
+import { URL } from "url";
+import { LoginModel } from "src/models/LoginModel";
+import {
+  ForgotAfterMiddleware,
+  ForgotMiddleware,
+} from "src/middlewares/ForgotMiddleware";
 @Controller("/account")
 @Scope(ProviderScope.SINGLETON)
 export class AccountController {
@@ -38,6 +55,24 @@ export class AccountController {
     return this.service.roles();
   }
 
+  @Get("/forgot")
+  checkToken(
+    @QueryParams("email") email: string,
+    @QueryParams("uuid") uuid: string,
+    @Res() res: Res
+  ) {
+    const url = new URL("http://localhost:4200");
+    url.searchParams.append("email", email);
+    url.searchParams.append("uuid", uuid);
+    url.pathname = "/forgot/restore";
+    return res.redirect(url.toString());
+  }
+
+  @Post("/forgot")
+  forgot(@Req() req: Req, @BodyParams("email") email: string) {
+    return this.service.forgot(email);
+  }
+
   @Get("/detail/:id")
   @Auth()
   @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
@@ -45,9 +80,16 @@ export class AccountController {
     return this.service.findAccount(id);
   }
 
+  @Put("/restore-password/:token")
+  @UseAuth(ForgotMiddleware)
+  @UseAfter(ForgotAfterMiddleware)
+  updatePassword(@BodyParams(LoginModel) { email, password }: LoginModel) {
+    this.service.updatePasswordByMail(email, password);
+  }
+
   @Post("/list")
-  // @Auth()
-  // @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  @Auth()
+  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   findMany(
     @BodyParams(FindPaginationModel)
     @GenericOf(User)

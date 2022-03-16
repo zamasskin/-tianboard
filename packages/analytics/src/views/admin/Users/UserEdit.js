@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useStoreActions } from 'easy-peasy';
 import { Alert, Typography } from '@mui/material';
 
 import MainCard from 'ui-component/cards/MainCard';

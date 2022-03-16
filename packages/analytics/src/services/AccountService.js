@@ -43,6 +43,14 @@ class AccountService {
     static async update(id, updateParams) {
         return $api.put(`/account/${id}`, updateParams);
     }
+
+    static async forgot(email) {
+        return axios.post(`${config.apiUrl}/account/forgot`, { email });
+    }
+
+    static async restore(uuid, email, password) {
+        return axios.put(`${config.apiUrl}/account/restore-password/${uuid}`, { email, password });
+    }
 }
 
 export default AccountService;

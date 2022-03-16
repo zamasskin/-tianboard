@@ -16,8 +16,6 @@ import Loadable from 'ui-component/Loadable';
 import MainLayout from 'layout/MainLayout';
 import MinimalLayout from 'layout/MinimalLayout';
 
-import Login from 'views/auth/Login';
-
 import Bootstrap from 'views/Bootstrap';
 
 // account
@@ -39,6 +37,11 @@ const Databases = Loadable(lazy(() => import('views/admin/Databases/index')));
 const DatabaseEdit = Loadable(lazy(() => import('views/admin/Databases/DatabaseEdit')));
 const Users = Loadable(lazy(() => import('views/admin/Users/index')));
 const UserEdit = Loadable(lazy(() => import('views/admin/Users/UserEdit')));
+
+// login
+const Login = Loadable(lazy(() => import('views/auth/Login')));
+const Forgot = Loadable(lazy(() => import('views/auth/Forgot/index')));
+const ForgotRestore = Loadable(lazy(() => import('views/auth/Forgot/Restore')));
 
 // ==============================|| APP ||============================== //
 
@@ -101,6 +104,10 @@ const AppContent = () => {
             <Route path="/login" element={<MinimalLayout />}>
                 <Route path="/" element={<Login />} />
                 <Navigate to="/" />
+            </Route>
+            <Route path="/forgot" element={<MinimalLayout />}>
+                <Route path="/" element={<Forgot />} />
+                <Route path="/restore" element={<ForgotRestore />} />
             </Route>
         </Routes>
     );

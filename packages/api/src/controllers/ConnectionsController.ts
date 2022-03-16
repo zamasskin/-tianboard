@@ -68,8 +68,8 @@ export class ConnectionController {
   }
 
   @Put("/:id")
-  @Auth()
-  @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
+  // @Auth()
+  // @UseAuth(CheckRoleMiddleware, { roles: [UserRole.Admin] })
   update(
     @PathParams("id") id: string,
     @BodyParams()

@@ -22,16 +22,12 @@ import {
   ConnectionsModelByFile,
   ConnectionsModelByUrl,
 } from "src/models/ConnectionsModel";
-import {
-  getConnections,
-  getConfigurations,
-  configPath,
-  getConnectionList,
-} from "src/config/databases";
 import { Options, MikroORM } from "@mikro-orm/core";
 import { User } from "src/entities/default/User";
 import { Forbidden, NotFound } from "@tsed/exceptions";
 import { rootDir } from "src/config";
+import { ConfigService } from "./ConfigService";
+import { ConnectionDto } from "src/dto/ConnectionDto";
 
 @Injectable()
 export class ConnectionService {
@@ -43,6 +39,9 @@ export class ConnectionService {
 
   @Inject()
   registry: MikroOrmRegistry;
+
+  @Inject()
+  configService: ConfigService;
 
   // Выполнение запроса
   async apply(contextName: string, { query, params }: ConnectionApplyParams) {
@@ -86,7 +85,11 @@ export class ConnectionService {
 
   // Получение всех подключений
   findMany() {
-    return getConnectionList();
+    const connections = this.configService.loadConfigDb();
+    return _.map(
+      connections,
+      (value, contextName) => new ConnectionDto({ ...value, contextName })
+    );
   }
 
   // Создание нового подключения
@@ -107,14 +110,11 @@ export class ConnectionService {
   }
 
   findOne(contextName: string) {
-    const connections = getConnectionList();
-    const connection = connections.find(
-      (conn) => conn.contextName === contextName
-    );
-    if (!connection) {
-      return new NotFound("connection not found");
+    const connections = this.configService.loadConfigDb();
+    if (!_.has(connections, contextName)) {
+      throw new NotFound("connection not found");
     }
-    return connection;
+    return new ConnectionDto({ ...connections[contextName], contextName });
   }
 
   createByUrl(config: ConnectionsModelByUrl) {
@@ -122,28 +122,11 @@ export class ConnectionService {
   }
 
   async saveConnections(config: ConnectionsModel | ConnectionsModelByUrl) {
-    const randomName: string = uniqueNamesGenerator({
-      dictionaries: [adjectives, colors, animals],
-    });
-    const connections = getConnections();
-    const contextName = connections.length === 0 ? "default" : randomName;
-    if (connections.length === 0) {
+    const connections = this.configService.loadConfigDb();
+    if (_.keys(connections).length === 0) {
       await this.createSchema(config);
     }
-    const updateConnections = [
-      ...connections,
-      {
-        ...config,
-        contextName,
-        entities: [`./src/entities/${contextName}/*.ts`],
-      },
-    ];
-
-    const updateConfig = _.merge(getConfigurations(), {
-      connections: updateConnections,
-    });
-    const result = await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
-    return { result: true };
+    this.configService.insertConfigDb(config);
   }
 
   async createSchema(config: ConnectionsModel | ConnectionsModelByUrl) {
@@ -171,73 +154,55 @@ export class ConnectionService {
     await generator.updateSchema();
   }
 
-  // Изменение текущего подключения по ид
-  async update(id: string, config: ConnectionsModelByUrl | ConnectionsModel) {
-    if (id === "default") {
-      throw new Forbidden("This connection cannot be deleted.");
-    }
-    const configurations = getConfigurations();
-    const connections = _.get(configurations, "connections");
-    const updateConnections = connections.map((conn) => {
-      if (conn.contextName === id) {
-        if (
-          config instanceof ConnectionsModelByUrl &&
-          config.clientUrl.substr(0, 7) === "file://"
-        ) {
-          return {
-            ...conn,
-            connectionName: config.connectionName,
-          };
-        } else {
-          return {
-            ...config,
-            contextName: conn.contextName,
-          };
-        }
-      }
-      return conn;
-    });
-    const updateConfig = { ...configurations, connections: updateConnections };
-    await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
-    return { result: true };
-  }
-
-  async delete(id: string) {
-    if (id === "default") {
+  update(
+    contextName: string,
+    config: ConnectionsModelByUrl | ConnectionsModel
+  ) {
+    if (contextName === "default") {
       throw new Forbidden("This connection cannot be deleted.");
     }
 
-    const configurations = getConfigurations();
-    const connections = _.get(configurations, "connections");
-    const deleteConnection = connections.find(
-      ({ contextName }: { contextName: string }) => contextName === id
-    );
-    if (!deleteConnection) {
+    const connections = this.configService.loadConfigDb();
+    if (!_.has(connections, contextName)) {
       throw new NotFound("connection not found");
     }
 
-    if (
-      deleteConnection.clientUrl &&
-      deleteConnection.clientUrl.substr(0, 7) === "file://"
-    ) {
-      const search = deleteConnection.clientUrl.match(/\/((\w|\.)+)$/);
-      if (search && search.length > 1) {
-        fs.rmSync(path.join(rootDir, "../", search[1]));
-      }
-    }
+    let connection = connections[contextName];
 
-    const updateConnections = connections.filter(
-      ({ contextName }: { contextName: string }) => contextName !== id
+    const isFile =
+      config instanceof ConnectionsModelByUrl &&
+      config.clientUrl.substr(0, 7) === "file://";
+    connections[contextName] = isFile
+      ? {
+          ...connection,
+          connectionName: config.connectionName,
+        }
+      : {
+          ...config,
+          entities: connection.entities,
+        };
+
+    this.configService.saveYaml(
+      this.configService.configDbFileName,
+      connections
     );
-    const updateConfig = { ...configurations, connections: updateConnections };
+  }
 
-    await fs.writeJSON(configPath, updateConfig, { spaces: 2 });
-    return { result: true };
+  delete(contextName: string) {
+    const connections = this.configService.loadConfigDb();
+    if (!_.has(connections, contextName)) {
+      throw new NotFound("connection not found");
+    }
+    this.configService.saveYaml(
+      this.configService.configDbFileName,
+      _.omit(connections, contextName)
+    );
   }
 
   async isBootstrap() {
     let userInstalled = false;
-    let connectionInstalled = getConnectionList().length > 0;
+    const connections = this.configService.loadConfigDb();
+    let connectionInstalled = _.keys(connections).length > 0;
     if (connectionInstalled) {
       const orm = await this.registry.get("default");
       if (orm?.em) {

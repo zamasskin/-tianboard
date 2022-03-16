@@ -1,16 +1,19 @@
 import { Inject, Injectable } from "@tsed/di";
 import { Orm } from "@tsed/mikro-orm";
-import { FilterQuery, FindOptions, MikroORM } from "@mikro-orm/core";
+import { FilterQuery, MikroORM } from "@mikro-orm/core";
 import { AccountModel, UpdateAccountModel } from "src/models/AccountModel";
 import { User } from "src/entities/default/User";
-import * as jwt from "jsonwebtoken";
 import { Forbidden, NotFound, Unauthorized } from "@tsed/exceptions";
-
-import { UserDto } from "src/dto/UserDto";
+import * as uuid from "uuid";
 import bcrypt from "bcrypt";
+
+import { originUrl } from "src/config/env";
+import { UserDto } from "src/dto/UserDto";
 import { TokenService } from "./TokenService";
 import { FindPaginationModel } from "src/models/FindPaginationModel";
-import { ValidationError } from "@tsed/common";
+import { PlatformCache, ValidationError } from "@tsed/common";
+import { MailService } from "./MailService";
+import ForgotMail from "src/views/mail/ForgotMail";
 
 @Injectable()
 export class AccountService {
@@ -19,6 +22,12 @@ export class AccountService {
 
   @Inject()
   private tokenService: TokenService;
+
+  @Inject()
+  mailService: MailService;
+
+  @Inject()
+  cache: PlatformCache;
 
   get repository() {
     return this.orm.em.getRepository(User);
@@ -131,7 +140,7 @@ export class AccountService {
 
   async update(id: number, updateParams: UpdateAccountModel) {
     const userRepository = this.orm.em.getRepository(User);
-    const user = await this.findOne(id);
+    const user = await this.findOne({ id });
     if (!user) {
       throw new NotFound("user not found");
     }
@@ -155,5 +164,41 @@ export class AccountService {
       user.password = hashPassword;
     }
     return userRepository.persistAndFlush([user]);
+  }
+
+  async updatePasswordByMail(email: string, password: string) {
+    const userRepository = this.orm.em.getRepository(User);
+    const user = await this.findOne({ email });
+    if (!user) {
+      throw new NotFound("user not found");
+    }
+    const hashPassword = await this.hash(password);
+    user.password = hashPassword;
+    return userRepository.persistAndFlush([user]);
+  }
+
+  setForgotToken(email: string, token: string) {
+    this.cache.set(`account/forgot/${email}`, token, { ttl: 60 * 60 * 1000 });
+  }
+
+  getForgotToken(email: string) {
+    return this.cache.get(`account/forgot/${email}`);
+  }
+
+  deleteForgotToken(email: string) {
+    return this.cache.del(`account/forgot/${email}`);
+  }
+
+  async forgot(email: string) {
+    const user = await this.findOne({ email });
+    if (!user) {
+      throw new NotFound("user not found");
+    }
+
+    const token = uuid.v4();
+    const mailParams = ForgotMail(email, token);
+    const result = this.mailService.send(mailParams);
+    await this.setForgotToken(email, token);
+    return result;
   }
 }

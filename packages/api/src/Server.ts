@@ -11,13 +11,17 @@ import methodOverride from "method-override";
 import cors from "cors";
 import "@tsed/ajv";
 import { config, rootDir } from "./config";
-import { getConnections } from "./config/databases";
+import { getConnections } from "./config/yaml";
 import { User } from "./entities/default/User";
 
 @Configuration({
   ...config,
   imports: [MikroOrmModule],
   mikroOrm: getConnections(),
+  cache: {
+    ttl: 300, // default TTL
+    store: "memory",
+  },
   acceptMimes: ["application/json"],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
