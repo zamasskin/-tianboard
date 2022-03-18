@@ -8,7 +8,7 @@ const examplesTask = new Map([
   [1, { steps: 10, tm: 1000 }],
   [2, { steps: 2, tm: 6000 }],
   [3, { steps: 15, tm: 2000 }],
-  [4, { steps: 15, tm: 2000, stepError: 10 }],
+  [4, { steps: 15, tm: 2000, stepError: 3 }],
 ]);
 
 const timeout = (ms: number) => new Promise((ok) => setTimeout(ok, ms));
@@ -32,22 +32,22 @@ export class TaskActionsService {
     taskAction.steps = taskSettings?.steps || 0;
 
     taskAction.callAction = async () => {
-      try {
-        if (
-          taskAction.step >= taskAction.steps ||
-          taskAction.error ||
-          taskAction?.off
-        ) {
-          return;
-        }
-
-        console.log(id, taskAction.percent);
-        await timeout(taskSettings?.tm || 0);
-        taskAction.step++;
-        await taskAction.callAction();
-      } catch (e) {
-        taskAction.error = e;
+      if (
+        taskAction.step >= taskAction.steps ||
+        taskAction.error ||
+        taskAction?.off
+      ) {
+        return;
       }
+
+      if (taskSettings?.stepError === taskAction.step) {
+        throw new Error("example error");
+      }
+
+      console.log(id, taskAction.percent);
+      await timeout(taskSettings?.tm || 0);
+      taskAction.step++;
+      await taskAction.callAction();
     };
     taskAction.start(() => this.taskActions.delete(id));
 
@@ -82,5 +82,9 @@ export class TaskActionsService {
     taskAction.off = true;
 
     this.taskActions.set(id, taskAction.clone());
+  }
+
+  list() {
+    return this.taskActions;
   }
 }
