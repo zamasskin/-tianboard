@@ -15,7 +15,10 @@ const timeout = (ms: number) => new Promise((ok) => setTimeout(ok, ms));
 
 @Injectable()
 export class TaskActionsService {
-  private tasks: Map<string, TaskActionDto> = new Map<string, TaskActionDto>();
+  private taskActions: Map<string, TaskActionDto> = new Map<
+    string,
+    TaskActionDto
+  >();
 
   example(task: Task) {
     if (!examplesTask.has(task.actionId)) {
@@ -28,9 +31,7 @@ export class TaskActionsService {
     const taskAction = new TaskActionDto(task);
     taskAction.steps = taskSettings?.steps || 0;
 
-    this.tasks.set(id, taskAction);
-
-    const callAction = async () => {
+    taskAction.callAction = async () => {
       try {
         if (
           taskAction.step >= taskAction.steps ||
@@ -43,38 +44,43 @@ export class TaskActionsService {
         console.log(id, taskAction.percent);
         await timeout(taskSettings?.tm || 0);
         taskAction.step++;
-        await callAction();
+        await taskAction.callAction();
       } catch (e) {
         taskAction.error = e;
       }
     };
+    taskAction.start(() => this.taskActions.delete(id));
 
-    callAction()
-      .then(() => {
-        taskAction.off = true;
-        this.tasks.delete(id);
-      })
-      .catch((e) => {
-        taskAction.error = e;
-      });
+    this.taskActions.set(id, taskAction);
 
     return id;
   }
 
   stop(id: string) {
-    if (this.tasks.has(id)) {
+    if (this.taskActions.has(id)) {
       throw new NotFound("task not found");
     }
 
-    const task = this.tasks.get(id) as TaskActionDto;
-    task.off = true;
-    this.tasks.delete(id);
+    const taskAction = this.taskActions.get(id) as TaskActionDto;
+    taskAction.off = true;
+    this.taskActions.delete(id);
   }
 
   clear() {
-    for (const task of this.tasks.values()) {
+    for (const task of this.taskActions.values()) {
       task.off = true;
     }
-    this.tasks.clear();
+    this.taskActions.clear();
+  }
+
+  next(id: string) {
+    if (this.taskActions.has(id)) {
+      throw new NotFound("task not found");
+    }
+
+    const taskAction = this.taskActions.get(id) as TaskActionDto;
+    taskAction.off = true;
+
+    this.taskActions.set(id, taskAction.clone());
   }
 }
