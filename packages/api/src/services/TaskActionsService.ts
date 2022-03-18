@@ -85,6 +85,21 @@ export class TaskActionsService {
   }
 
   list() {
-    return this.taskActions;
+    const taskActionsDescription = [];
+    for (const id of this.taskActions.keys()) {
+      const taskAction = this.taskActions.get(id) as TaskActionDto;
+      const task = taskAction.task;
+      taskActionsDescription.push({
+        id,
+        percent: taskAction.percent,
+        name: task.name,
+        action: task.action,
+        step: taskAction.step,
+        steps: taskAction.steps,
+        error: !!taskAction.error,
+        message: taskAction.error?.message || "",
+      });
+    }
+    return taskActionsDescription;
   }
 }
