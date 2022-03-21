@@ -1,5 +1,13 @@
-import { DateType, Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  Collection,
+  DateType,
+  Entity,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from "@mikro-orm/core";
 import { TaskModel } from "src/models/TaskModel";
+import { TaskAction } from "./TaskAction";
 
 @Entity()
 export class Task {
@@ -23,6 +31,9 @@ export class Task {
 
   @Property()
   actionId: number;
+
+  @OneToMany(() => TaskAction, (action) => action.task)
+  actions = new Collection<TaskAction>(this);
 
   constructor(task?: TaskModel) {
     if (task) {

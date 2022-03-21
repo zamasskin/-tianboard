@@ -1,39 +1,76 @@
+import { FilterQuery, MikroORM } from "@mikro-orm/core";
 import { Inject, Injectable } from "@tsed/di";
+import { NotFound } from "@tsed/exceptions";
+import { Orm } from "@tsed/mikro-orm";
 import { Task } from "src/entities/default/Task";
-import { TaskActionsService } from "./TaskActionsService";
+import { FindPaginationModel } from "src/models/FindPaginationModel";
+import { TaskModel } from "src/models/TaskModel";
+import { TaskActionsService } from "./TaskAction/TaskActionsService";
 
 @Injectable()
 export class TasksService {
+  @Orm("default")
+  private readonly orm!: MikroORM;
+
   @Inject()
   private taskActionService: TaskActionsService;
 
-  call() {}
-
-  startMany() {
-    const task1 = new Task();
-    task1.action = "example";
-    task1.name = "test1";
-    task1.actionId = 1;
-    const task2 = new Task();
-    task2.action = "example";
-    task1.name = "test2";
-    task2.actionId = 2;
-    const task3 = new Task();
-    task3.action = "example";
-    task1.name = "test3";
-    task3.actionId = 3;
-    const task4 = new Task();
-    task4.action = "example";
-    task1.name = "test4";
-    task4.actionId = 4;
-
-    this.taskActionService.example(task1);
-    this.taskActionService.example(task2);
-    this.taskActionService.example(task3);
-    this.taskActionService.example(task4);
+  get repository() {
+    return this.orm.em.getRepository(Task);
   }
 
-  stopMany() {
-    this.taskActionService.clear();
+  async create(model: TaskModel) {
+    const task = new Task(model);
+    await this.repository.persistAndFlush(task);
+    return task;
+  }
+
+  async delete(id: number) {
+    const taskAction = this.repository.findOne({ id });
+    await this.repository.removeAndFlush(taskAction);
+    return taskAction;
+  }
+
+  async findOne(where: FilterQuery<Task>) {
+    return this.repository.findOne(where);
+  }
+
+  async findMany(model: FindPaginationModel<Task>) {
+    const [tasks, count] = await Promise.all([
+      this.repository.find(model.where, model.options),
+      this.count(),
+    ]);
+    return {
+      tasks,
+      count,
+      perPage: model.perPage,
+      currentPage: model.currentPage,
+    };
+  }
+
+  async count() {
+    return this.repository.count();
+  }
+
+  async start(id: number) {
+    const task = await this.findOne({ id });
+    if (!task) {
+      throw new NotFound("task not found");
+    }
+    return this.taskActionService.createAndStart(task);
+  }
+
+  async stop(id: number) {}
+
+  async startMany() {
+    const taskList = await this.repository.find({});
+    return Promise.all(
+      taskList.map((task) => this.taskActionService.createAndStart(task))
+    );
+  }
+
+  async stopMany() {
+    // const taskList = await this.repository.find({});
+    // return Promise.all(taskList.map(task) )
   }
 }
