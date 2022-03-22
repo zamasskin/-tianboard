@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "start": "lerna run start --stream",
+    "start:api": "lerna run start --stream --scope @tianboard/api",
+    "start:analytics": "lerna run start --stream --scope @tianboard/analytics",
     "start:prod": "lerna run start:prod",
     "bootstrap": "yarn install"
   }

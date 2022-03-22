@@ -18,7 +18,8 @@ import {
     Stack,
     TextField,
     Typography,
-    useMediaQuery
+    useMediaQuery,
+    Switch
 } from '@mui/material';
 
 // third-party
@@ -28,6 +29,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import NotificationList from './NotificationList';
+import NotificationListBack from './NotificationListBack';
 
 // assets
 import { IconBell } from '@tabler/icons';
@@ -60,6 +62,7 @@ const NotificationSection = () => {
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('');
+    const [isExample, setIsExample] = useState(false);
     /**
      * anchorRef is used on different componets and specifying one type leads to other components throwing an error
      * */
@@ -151,7 +154,7 @@ const NotificationSection = () => {
                                             <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
                                                 <Grid item>
                                                     <Stack direction="row" spacing={2}>
-                                                        <Typography variant="subtitle1">All Notification</Typography>
+                                                        <Typography variant="subtitle1">Уведомления</Typography>
                                                         <Chip
                                                             size="small"
                                                             label="01"
@@ -168,6 +171,9 @@ const NotificationSection = () => {
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Switch label="Пример" onChange={(_, val) => setIsExample(val)} checked={isExample} />
                                         </Grid>
                                         <Grid item xs={12}>
                                             <PerfectScrollbar
@@ -198,7 +204,7 @@ const NotificationSection = () => {
                                                         <Divider sx={{ my: 0 }} />
                                                     </Grid>
                                                 </Grid>
-                                                <NotificationList />
+                                                {isExample ? <NotificationListBack /> : <NotificationList />}
                                             </PerfectScrollbar>
                                         </Grid>
                                     </Grid>

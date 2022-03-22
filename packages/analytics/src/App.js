@@ -37,6 +37,7 @@ const Databases = Loadable(lazy(() => import('views/admin/Databases/index')));
 const DatabaseEdit = Loadable(lazy(() => import('views/admin/Databases/DatabaseEdit')));
 const Users = Loadable(lazy(() => import('views/admin/Users/index')));
 const UserEdit = Loadable(lazy(() => import('views/admin/Users/UserEdit')));
+const Tasks = Loadable(lazy(() => import('views/admin/Tasks/index')));
 
 // login
 const Login = Loadable(lazy(() => import('views/auth/Login')));
@@ -60,7 +61,8 @@ const AppContent = () => {
     useEffect(() => {
         setLoad(true);
         Promise.all([checkInstalled(), checkAuth()]).finally(() => setLoad(false));
-    }, [checkInstalled, checkAuth]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (load) {
         return <div>load...</div>;
@@ -97,6 +99,9 @@ const AppContent = () => {
                         <Route path="/users">
                             <Route path="" element={<Users />} />
                             <Route path=":userId" element={<UserEdit />} />
+                        </Route>
+                        <Route path="/task">
+                            <Route path="" element={<Tasks />} />
                         </Route>
                     </Route>
                 </Route>
