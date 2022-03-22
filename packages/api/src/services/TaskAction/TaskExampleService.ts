@@ -1,5 +1,5 @@
 import { $log, BeforeInit } from "@tsed/common";
-import { Inject, Injectable, ProviderScope } from "@tsed/di";
+import { Inject, Injectable } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { TaskAction } from "src/entities/default/TaskAction";
 import { TaskActionsService } from "./TaskActionsService";
