@@ -28,7 +28,10 @@ import { User } from "./entities/default/User";
   mount: {
     "/api": [`${rootDir}/controllers/**/*.ts`],
   },
-  componentsScan: [`./services/**/**.js`, `${rootDir}/protocols/**/*.ts`],
+  componentsScan: [
+    `${rootDir}/services/**/*.ts`,
+    `${rootDir}/protocols/**/*.ts`,
+  ],
   passport: {
     userInfoModel: User,
   },

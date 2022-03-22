@@ -1,6 +1,6 @@
-import { Inject, Injectable } from "@tsed/di";
+import { $log, BeforeInit } from "@tsed/common";
+import { Inject, Injectable, ProviderScope } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
-import { TaskActionRegister } from "src/decorators/TaskAction";
 import { TaskAction } from "src/entities/default/TaskAction";
 import { TaskActionsService } from "./TaskActionsService";
 
@@ -12,20 +12,28 @@ const examplesTask = new Map([
 ]);
 
 const timeout = (ms: number) => new Promise((ok) => setTimeout(ok, ms));
-
 @Injectable()
-export class TaskExampleService {
+export class TaskExampleService implements BeforeInit {
   @Inject()
   taskActionService: TaskActionsService;
 
-  @TaskActionRegister()
-  async example(taskAction: TaskAction) {
+  $beforeInit(): void | Promise<any> {
+    this.taskActionService.setMethod("example", {
+      method: this.use,
+      target: this,
+    });
+  }
+
+  async use(taskAction: TaskAction) {
     const task = taskAction.task;
     if (!examplesTask.has(task.actionId)) {
       throw new NotFound("task not found");
     }
     const taskSettings = examplesTask.get(task.actionId);
     const steps = taskSettings?.steps || 0;
+    $log.info(
+      `taskId = ${task.id}, taskActionId = ${taskAction.id}, steps = ${steps}, step = ${taskAction.step}, percent = ${taskAction.percent} `
+    );
     if (taskAction.step >= steps) {
       await this.taskActionService.delete(taskAction.id);
       return false;
@@ -41,6 +49,8 @@ export class TaskExampleService {
 
     await timeout(taskSettings?.tm || 0);
     taskAction.step++;
-    await this.taskActionService.save(taskAction);
+    taskAction.percent = (100 / steps) * taskAction.step;
+    await this.taskActionService.checkAndSave(taskAction);
+    return true;
   }
 }

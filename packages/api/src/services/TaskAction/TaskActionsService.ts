@@ -1,17 +1,26 @@
-import { Injectable } from "@tsed/di";
+import { Inject, Injectable } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { TaskAction } from "src/entities/default/TaskAction";
 import { FilterQuery, MikroORM } from "@mikro-orm/core";
 import { Orm } from "@tsed/mikro-orm";
 import { Task } from "src/entities/default/Task";
 import { FindPaginationModel } from "src/models/FindPaginationModel";
+import { $log } from "@tsed/common";
 
-import { TaskActionStore, Actions } from "src/storage/TaskActionStore";
-
+export type ActionCall = {
+  method: (taskAction: TaskAction) => Promise<boolean>;
+  target: any;
+};
 @Injectable()
 export class TaskActionsService {
   @Orm("default")
   private readonly orm!: MikroORM;
+
+  private methods: Map<string, ActionCall> = new Map<string, ActionCall>();
+
+  setMethod(methodName: string, actionCall: ActionCall) {
+    this.methods.set(methodName, actionCall);
+  }
 
   get repository() {
     return this.orm.em.getRepository(TaskAction);
@@ -39,8 +48,8 @@ export class TaskActionsService {
   }
 
   async delete(id: number) {
-    const taskAction = this.repository.findOne({ id });
-    await this.repository.removeAndFlush(taskAction);
+    const taskAction = await this.repository.findOne({ id });
+    await this.repository.removeAndFlush([taskAction]);
     return taskAction;
   }
 
@@ -66,13 +75,24 @@ export class TaskActionsService {
   }
 
   async save(taskAction: TaskAction) {
-    this.repository.persistAndFlush(taskAction);
+    return this.repository.persistAndFlush(taskAction);
+  }
+
+  async checkAndSave(taskAction: TaskAction) {
+    const taskActionBack = await this.findOne({ id: taskAction.id });
+    if (taskActionBack) {
+      return this.save(taskAction);
+    }
   }
 
   async createAndStart(task: Task) {
     const taskAction = await this.create(task);
     if (taskAction?.id) {
-      this.call(taskAction.id);
+      this.call(taskAction.id)
+        .then(() => $log.info(`task ${taskAction.id} success`))
+        .catch((e) =>
+          $log.error(`error task ${taskAction.id}. error: ${e.message}`)
+        );
     }
     return taskAction;
   }
@@ -83,7 +103,8 @@ export class TaskActionsService {
       throw new NotFound("task action not found");
     }
 
-    if (!TaskActionStore.has(taskAction)) {
+    const task = taskAction.task;
+    if (!this.methods.has(task.action)) {
       throw new NotFound("method not found");
     }
 
@@ -108,17 +129,16 @@ export class TaskActionsService {
   }
 
   async stopMany() {
-    const taskActionList = await this.repository.find({});
-    return Promise.all(
+    const taskActionList = await this.repository.find({ id: { $gt: 0 } });
+    return await Promise.all(
       taskActionList.map((taskAction) => this.stop(taskAction.id))
     );
   }
 
   async clear() {
-    const taskActionList = await this.repository.find({});
-    return Promise.all(
-      taskActionList.map((taskAction) => this.delete(taskAction.id))
-    );
+    const taskActionList = await this.repository.find({ id: { $gt: 0 } });
+    await this.repository.removeAndFlush(taskActionList);
+    return taskActionList;
   }
 
   async restart(id: number) {
@@ -129,6 +149,7 @@ export class TaskActionsService {
 
     taskAction.stop = false;
     taskAction.step = 0;
+    taskAction.percent = 0;
     taskAction.error = false;
     taskAction.errorMessage = "";
     await this.save(taskAction);
@@ -168,11 +189,12 @@ export class TaskActionsService {
       return false;
     }
 
-    if (!TaskActionStore.has(taskAction)) {
+    const task = taskAction.task;
+    if (!this.methods.has(task.action)) {
       return false;
     }
 
-    const { method, target } = TaskActionStore.get(taskAction) as Actions;
+    const { method, target } = this.methods.get(task.action) as ActionCall;
     const next = await method.apply(target, [taskAction]);
     return next && this.call(taskAction.id);
   }

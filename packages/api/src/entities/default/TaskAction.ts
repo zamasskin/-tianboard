@@ -22,10 +22,14 @@ export class TaskAction {
   @ManyToOne({ entity: () => Task })
   task: Task;
 
+  @Property()
+  percent: number;
+
   constructor(task: Task) {
     this.task = task;
     this.step = 1;
     this.error = false;
     this.stop = false;
+    this.percent = 0;
   }
 }

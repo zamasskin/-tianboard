@@ -3,7 +3,8 @@ import fs from "fs-extra";
 import path from "path";
 import { Constant, Inject, Injectable } from "@tsed/di";
 import { ConnectionStringParser } from "connection-string-parser";
-import { MikroOrmRegistry } from "@tsed/mikro-orm";
+import { MikroOrmRegistry, Orm } from "@tsed/mikro-orm";
+import { getConnections } from "src/config/yaml";
 
 import {
   uniqueNamesGenerator,
@@ -28,6 +29,7 @@ import { Forbidden, NotFound } from "@tsed/exceptions";
 import { rootDir } from "src/config";
 import { ConfigService } from "./ConfigService";
 import { ConnectionDto } from "src/dto/ConnectionDto";
+import { $log } from "@tsed/common";
 
 @Injectable()
 export class ConnectionService {
@@ -124,12 +126,12 @@ export class ConnectionService {
   async saveConnections(config: ConnectionsModel | ConnectionsModelByUrl) {
     const connections = this.configService.loadConfigDb();
     if (_.keys(connections).length === 0) {
-      await this.createSchema(config);
+      await this.generateTables(config);
     }
     this.configService.insertConfigDb(config);
   }
 
-  async createSchema(config: ConnectionsModel | ConnectionsModelByUrl) {
+  async generateTables(config: ConnectionsModel | ConnectionsModelByUrl) {
     const orm = await MikroORM.init({
       ...(config as Options),
       entities: [`./src/entities/default/*.ts`],
@@ -152,6 +154,50 @@ export class ConnectionService {
     await generator.dropSchema();
     await generator.createSchema();
     await generator.updateSchema();
+
+    orm.close();
+  }
+
+  async getOrm() {
+    const connections = getConnections();
+    const config = connections.find((conn) => conn.contextName === "default");
+    if (!config) {
+      throw new NotFound("connection not found");
+    }
+
+    const orm = await MikroORM.init({
+      ...(config as Options),
+      entities: [`./src/entities/default/*.ts`],
+    });
+    return orm;
+  }
+
+  async createSchema() {
+    const orm = await this.getOrm();
+    const generator = await orm.getSchemaGenerator();
+    await generator.updateSchema();
+    orm.close();
+  }
+
+  async updateSchema() {
+    const orm = await this.getOrm();
+    const generator = await orm.getSchemaGenerator();
+    await generator.updateSchema();
+    orm.close();
+  }
+
+  async dropSchema() {
+    const orm = await this.getOrm();
+    const generator = await orm.getSchemaGenerator();
+    await generator.dropSchema();
+    orm.close();
+  }
+
+  async generateSchema() {
+    const orm = await this.getOrm();
+    const generator = await orm.getSchemaGenerator();
+    await generator.generate();
+    orm.close();
   }
 
   update(

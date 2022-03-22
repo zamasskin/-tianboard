@@ -9,7 +9,7 @@ export class TaskModel {
   @Required()
   dateStart: Date;
 
-  @Property({ nullable: true })
+  @Property()
   interval?: number;
 
   @Property()
