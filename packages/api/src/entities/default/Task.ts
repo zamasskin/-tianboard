@@ -6,6 +6,7 @@ import {
   PrimaryKey,
   Property,
 } from "@mikro-orm/core";
+import { NotFound } from "@tsed/exceptions";
 import { TaskModel } from "src/models/TaskModel";
 import { TaskAction } from "./TaskAction";
 
@@ -20,8 +21,8 @@ export class Task {
   @Property({ type: DateType })
   dateStart: Date;
 
-  @Property({ nullable: true })
-  interval: number;
+  @Property()
+  cronExpression: string;
 
   @Property()
   recurrent: boolean;
@@ -38,12 +39,18 @@ export class Task {
   constructor(task?: TaskModel) {
     if (task) {
       this.name = task.name;
-      this.dateStart = task.dateStart;
       this.action = task.action;
       this.actionId = task.actionId;
-      this.recurrent = task.recurrent;
-      if (task?.interval) {
-        this.interval = task.interval;
+      if (task.recurrent) {
+        if (!task.cronExpression) {
+          throw new NotFound("cronExpression is required");
+        }
+        this.cronExpression = task.cronExpression;
+      } else {
+        if (!task.dateStart) {
+          throw new NotFound("dateStart is required");
+        }
+        this.dateStart = task.dateStart;
       }
     }
   }

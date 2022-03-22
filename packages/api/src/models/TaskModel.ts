@@ -6,11 +6,10 @@ export class TaskModel {
   name: string;
 
   @Property()
-  @Required()
-  dateStart: Date;
+  dateStart?: Date;
 
   @Property()
-  interval?: number;
+  cronExpression?: string = "";
 
   @Property()
   @Required()
