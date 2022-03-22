@@ -198,4 +198,8 @@ export class TaskActionsService {
     const next = await method.apply(target, [taskAction]);
     return next && this.call(taskAction.id);
   }
+
+  findMethods() {
+    return Array.from(this.methods.keys());
+  }
 }
