@@ -38,6 +38,8 @@ const DatabaseEdit = Loadable(lazy(() => import('views/admin/Databases/DatabaseE
 const Users = Loadable(lazy(() => import('views/admin/Users/index')));
 const UserEdit = Loadable(lazy(() => import('views/admin/Users/UserEdit')));
 const Tasks = Loadable(lazy(() => import('views/admin/Tasks/index')));
+const TasksNew = Loadable(lazy(() => import('views/admin/Tasks/New')));
+const TasksEdit = Loadable(lazy(() => import('views/admin/Tasks/Edit')));
 
 // login
 const Login = Loadable(lazy(() => import('views/auth/Login')));
@@ -102,6 +104,8 @@ const AppContent = () => {
                         </Route>
                         <Route path="/task">
                             <Route path="" element={<Tasks />} />
+                            <Route path="new" element={<TasksNew />} />
+                            <Route path=":taskId" element={<TasksEdit />} />
                         </Route>
                     </Route>
                 </Route>

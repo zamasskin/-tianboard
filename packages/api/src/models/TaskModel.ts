@@ -9,7 +9,7 @@ export class TaskModel {
   dateStart?: Date;
 
   @Property()
-  cronExpression?: string = "";
+  cronExpression?: string;
 
   @Property()
   @Required()

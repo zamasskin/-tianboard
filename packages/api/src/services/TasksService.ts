@@ -26,9 +26,27 @@ export class TasksService {
   }
 
   async delete(id: number) {
-    const taskAction = this.repository.findOne({ id });
-    await this.repository.removeAndFlush(taskAction);
+    const taskAction = await this.repository.findOne({ id });
+    await this.repository.removeAndFlush([taskAction]);
     return taskAction;
+  }
+
+  async update(id: number, model: TaskModel) {
+    const task = new Task(model);
+    const oldTask = await this.repository.findOne({ id });
+    if (!oldTask) {
+      throw new NotFound("task not found");
+    }
+
+    oldTask.action = task.action;
+    oldTask.actionId = task.actionId;
+    oldTask.cronExpression = task.cronExpression;
+    oldTask.dateStart = task.dateStart;
+    oldTask.name = task.name;
+    oldTask.recurrent = task.recurrent;
+
+    await this.repository.persistAndFlush([oldTask]);
+    return task;
   }
 
   async findOne(where: FilterQuery<Task>) {

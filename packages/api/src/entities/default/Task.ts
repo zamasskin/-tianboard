@@ -18,10 +18,10 @@ export class Task {
   @Property()
   name: string;
 
-  @Property({ type: DateType })
+  @Property({ type: DateType, nullable: true })
   dateStart: Date;
 
-  @Property()
+  @Property({ nullable: true })
   cronExpression: string;
 
   @Property()
@@ -37,10 +37,11 @@ export class Task {
   actions = new Collection<TaskAction>(this);
 
   constructor(task?: TaskModel) {
-    if (task) {
+    if (task instanceof TaskModel) {
       this.name = task.name;
       this.action = task.action;
       this.actionId = task.actionId;
+      this.recurrent = task.recurrent;
       if (task.recurrent) {
         if (!task.cronExpression) {
           throw new NotFound("cronExpression is required");

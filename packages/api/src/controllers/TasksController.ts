@@ -40,6 +40,14 @@ export class TasksController {
     return this.taskService.delete(id);
   }
 
+  @Put("/:id")
+  update(
+    @PathParams("id") id: number,
+    @BodyParams(TaskModel) model: TaskModel
+  ) {
+    return this.taskService.update(id, model);
+  }
+
   @Post("/list")
   @ContentType("application/json")
   findMany(

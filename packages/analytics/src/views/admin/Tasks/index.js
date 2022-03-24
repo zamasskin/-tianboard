@@ -67,10 +67,11 @@ const Tasks = () => {
                 perPage: pageSize,
                 currentPage: page + 1
             });
-            const { count, data } = response.data;
+            const { count, tasks } = response.data;
             setRowCount(count);
-            setRows(data);
+            setRows(tasks);
         } catch (e) {
+            console.log(e?.response?.data?.message || e.message);
             setError(e?.response?.data?.message || e.message);
         } finally {
             setLoading(false);
